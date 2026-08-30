@@ -1,0 +1,8 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/AtlazDB/Atlaz4-BackEnd.git
+	branch = main
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/AtlazDB/Atlaz4-FrontEnd.git
+	branch = main
