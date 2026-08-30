@@ -1,4 +1,5 @@
-<img width="1074" height="196" alt="" src="" />
+<img width="1074" height="196" alt="Captura de tela 2026-08-30 162135" src="https://github.com/user-attachments/assets/742050b7-d47e-4643-b9cc-ec2421e037af" />
+
 
 # GeoRural DataHub
 <p align="center">
