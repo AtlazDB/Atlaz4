@@ -1,8 +1,0 @@
-[submodule "backend"]
-	path = backend
-	url = https://github.com/AtlazDB/Atlaz4-BackEnd
-	branch = main
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/AtlazDB/Atlaz4-FrontEnd
-	branch = main
