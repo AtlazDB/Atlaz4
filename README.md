@@ -25,11 +25,16 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 ## 📋 Backlog do Produto <a id="backlog"></a>
 
-| ID | Prioridade | User Story | Est. (h) | Sprint | Status |
-| :--: | :---: | --- | :---: | :---: | :---: |
-| **US01** | ... | .... | xx | x | ...✅⚙️ |
-| **US02** | ... | .... | xx | x | ...✅⚙️ |
-| **US0X** | ... | .... | xx | x | ...✅⚙️ |
+|    ID    | Prioridade | User Story                                                                                                                                                                                                   | Est. (h) | Sprint |     Status      |
+| :------: | :--------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------: | :----: | :-------------: |
+| **US01** |    Alta    | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      |    5     |   1    | Em Andamento ⚙️ |
+| **US02** |    Alta    | Como Operador de Dados, quero validar os dados importados e identificar registros inválidos para que inconsistências sejam identificadas e os dados confiáveis sejam separados dos que precisam de correção. |    8     |   1    | Em Andamento ⚙️ |
+| **US03** |    Alta    | Como Operador de Dados, quero padronizar os dados válidos para que informações provenientes de diferentes fontes possam ser utilizadas de forma consistente nos cruzamentos e cálculos<br>                   |    8     |   1    | Em Andamento ⚙️ |
+| **US04** |    Alta    | Como Analista, quero consultar os indicadores ambientais dos imóveis rurais a partir dos dados do CAR e dos cruzamentos com outras fontes para que eu possa avaliar a situação ambiental dos imóveis.        |    8     |   2    |  Planejada 📅   |
+|   US05   |    Alta    | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.                    |    8     |   2    |  Planejada 📅   |
+|   US06   |   Média    | Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados.   |    5     |   2    |  Planejada 📅   |
+|   US07   |   Média    | Como Analista, quero consultar os indicadores ambientais dos imóveis rurais por meio de uma API para que eu possa utilizar os resultados da plataforma em outros sistemas.                                   |    5     |   3    |  Planejada 📅   |
+|   US08   |   Baixa    | Como Analista, quero visualizar os imóveis rurais e suas informações ambientais em um mapa, gráficos e tabelas para que eu possa analisar os indicadores de forma visual e facilitar a tomada de decisão.    |    8     |   3    |  Planejada 📅   |
 ---
 
 ## Cronograma das Sprints <a id="sprint"></a>
