@@ -25,7 +25,7 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 ## 📋 Backlog do Produto <a id="backlog"></a>
 
-|    ID    | Prioridade | User Story                                                                                                                                                                                                   | Est. (h) | Sprint |     Status      |
+|    ID    | Prioridade | User Story                                                                                                                                                                                                   | Estimativa | Sprint |     Status      |
 | :------: | :--------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------: | :----: | :-------------: |
 | **US01** |    Alta    | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      |    5     |   1    | Em Andamento ⚙️ |
 | **US02** |    Alta    | Como Operador de Dados, quero validar os dados importados e identificar registros inválidos para que inconsistências sejam identificadas e os dados confiáveis sejam separados dos que precisam de correção. |    8     |   1    | Em Andamento ⚙️ |
@@ -39,11 +39,11 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 ## Cronograma das Sprints <a id="sprint"></a>
 
-|    Sprint    | Início |   Fim   | Documentação | Status | 
-| :----------: | :----: | :-----: | :----------: | :----: |
-| 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |  Em Andamento ⚙️     |
-| 🔖 Sprint 2 | 05/10  | 25/10 |   [Sprint 2](./Documentacao/Processo/Sprints/Sprint2/README.md)             |  Em Andamento ⚙️     |
-| 🔖 Sprint 3 | 02/11  | 22/11 |   [Sprint 3](./Documentacao/Processo/Sprints/Sprint3/README.md)             |  Em Andamento ⚙️     |
+|    Sprint    | Início |   Fim   | Documentação | Link video | Status | 
+| :----------: | :----: | :-----: | :----------: | :----: | :----: |
+| 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
+| 🔖 Sprint 2 | 05/10  | 25/10 |   [Sprint 2](./Documentacao/Processo/Sprints/Sprint2/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
+| 🔖 Sprint 3 | 02/11  | 22/11 |   [Sprint 3](./Documentacao/Processo/Sprints/Sprint3/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
 
 ---
 ## 💻 Tecnologias <a id="tecnologias"></a>
