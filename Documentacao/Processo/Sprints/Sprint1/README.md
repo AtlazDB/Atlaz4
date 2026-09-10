@@ -12,10 +12,10 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 
 ---
 
-| Capacidade estimada da Equipe por Sprint:               | 21h                                          |
+| Capacidade estimada da Equipe por Sprint:               | pontos (21)                                          |
 | ------------------------------------------------------- | -------------------------------------------- |
-| Meta da Sprint:                                         | User Stories de rank 1, 2 e 3 (Total de 21h) |
-| Previsão da Sprint (extras, sem compromisso de entrega) | —                                            |
+| Meta da Sprint:                                         | User Stories de rank 1 e 2 (Total de 13 pontos)    |
+| Previsão da Sprint (extras, sem compromisso de entrega) | User Story de rank 3 (Total de 8 pontos)           |
 
 | Rank | Prioridade | User Story                                                                                                                                                                                                   | Estimativa | Sprint |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------ |
@@ -25,9 +25,9 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 
 ---
 
-## 📋 User Stories & DoD
+## 📋 User Stories, DoD & DoR
 
-Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (Definition of Done)**, que são os critérios específicos para considerar cada funcionalidade concluída.
+Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (Definition of Done)** e **DoR (Definition of Ready)**, que são os critérios específicos para considerar cada funcionalidade concluída.
 
 ### **US01 - Cadastro de Fontes e Importação de Dados**
 
@@ -56,7 +56,19 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     - Registro das informações da importação para permitir sua identificação e rastreabilidade.
 	    
     - Dados do CAR armazenados de forma que possam ser utilizados nas etapas posteriores de validação, tratamento e cálculo dos indicadores ambientais.
-        
+ 
+- **🏃‍ DoR (Definition of Ready):**
+    
+    - **Fontes:** Definição das fontes e conjuntos de dados utilizados.
+    
+	- **Dados de entrada:** Disponibilização de pelo menos um conjunto de dados para realização dos testes de ingestão, validação e padronização.
+
+   	- **Modelagem:** Estrutura para fontes e importações definida.
+ 
+ 	- **Armazenamento:** Zona Bruta definida.
+ 
+	- **Design:** Protótipo das telas definido, quando aplicável.
+ 
 ---
 
 ### **US02 - Validação dos Dados e Quarentena**
@@ -86,7 +98,18 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     - Registro do motivo da rejeição para permitir análise posterior.
         
     - Disponibilização das informações de validação para acompanhamento pelo Operador de Dados.
-        
+
+- **🏃‍ DoR (Definition of Ready):**
+    
+    - **Dados de entrada:** Dados importados pela US01 disponíveis.
+ 
+  	- **Modelagem:** Estrutura para dados validados e Quarentena definida.
+
+  	- **Regras:** Critérios para identificar dados válidos e inválidos definidos.
+ 
+  	- **Padronização:** Definição dos formatos esperados para os dados válidos.
+ 
+  	- **Ambiente:** Ambiente de desenvolvimento configurado.
 
 ---
 
@@ -115,7 +138,18 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     - Registro da execução do processo de tratamento e das informações relevantes da operação.
         
     - Dados tratados disponíveis para utilização nas etapas posteriores de cruzamento e cálculo dos indicadores.
-        
+
+- **🏃‍ DoR (Definition of Ready):**
+    
+    - **Dados de entrada:** Dados aprovados pela US02 disponíveis.
+ 
+  	- **Padronização:** Formatos e padrões dos dados definidos.
+ 
+  	- **Modelagem:** Estrutura dos dados padronizados definida.
+   
+  	- **Dados geoespaciais:** Sistema de referência definido, quando aplicável.
+     
+	- **Zona Tratada:** Estrutura para armazenamento dos dados tratados definida.
 
 ---
 
@@ -127,18 +161,16 @@ Estes critérios garantem que o time tem todos os insumos necessários para inic
     
 - **Fontes de dados:** Definição das fontes e conjuntos de dados que serão utilizados como entrada na Sprint.
     
-- **Dados de entrada:** Disponibilização de pelo menos um conjunto de dados para realização dos testes de ingestão, validação e padronização.
+- **Dados de entrada:** Disponibilização de pelo menos um conjunto de dados para realização do desenvolvimento e testes.
+
+- **Regras:** Regras de validação e padronização necessárias definidas
     
 - **Modelagem:** Estrutura inicial do banco de dados definida para o catálogo de fontes, dados importados e registros em Quarentena.
     
 - **Ambiente:** Ambiente de desenvolvimento e infraestrutura necessários para execução da aplicação configurados.
     
-- **Regras de validação:** Definição das regras mínimas para identificar dados válidos e inválidos.
-    
-- **Padronização:** Definição dos formatos e padrões que deverão ser aplicados aos dados válidos.
-    
 - **Design:** Protótipo das interfaces necessárias para cadastro, importação e acompanhamento dos dados definido, quando aplicável.
-    
+
 
 ---
 
