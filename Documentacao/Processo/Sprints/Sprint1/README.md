@@ -12,7 +12,7 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 
 ---
 
-| Capacidade estimada da Equipe por Sprint:               | pontos                                          |
+| Capacidade estimada da Equipe por Sprint:               | pontos (21)                                          |
 | ------------------------------------------------------- | -------------------------------------------- |
 | Meta da Sprint:                                         | User Stories de rank 1 e 2 (Total de 13 pontos)    |
 | Previsão da Sprint (extras, sem compromisso de entrega) | User Story de rank 3 (Total de 8 pontos)           |
