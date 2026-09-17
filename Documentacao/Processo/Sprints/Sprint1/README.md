@@ -14,14 +14,15 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 
 | Capacidade estimada da Equipe por Sprint:               | pontos (21)                                          |
 | ------------------------------------------------------- | -------------------------------------------- |
-| Meta da Sprint:                                         | User Stories de rank 1 e 2 (Total de 13 pontos)    |
-| Previsão da Sprint (extras, sem compromisso de entrega) | User Story de rank 3 (Total de 8 pontos)           |
+| Meta da Sprint:                                         | User Stories de rank 1, 2 e 3 (Total de 21 pontos)    |
+| Previsão da Sprint (extras, sem compromisso de entrega) | User Story de rank 4 (Total de 8 pontos)           |
 
 | Rank | Prioridade | User Story                                                                                                                                                                                                   | Estimativa | Sprint |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------ |
-| 1    | Alta       | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      | 5          | 1      |
-| 2    | Alta       | Como Operador de Dados, quero validar os dados importados e identificar registros inválidos para que inconsistências sejam identificadas e os dados confiáveis sejam separados dos que precisam de correção. | 8          | 1      |
-| 3    | Alta       | Como Operador de Dados, quero padronizar os dados válidos para que informações provenientes de diferentes fontes possam ser utilizadas de forma consistente nos cruzamentos e cálculos.                      | 8          | 1      |
+| 1    | Alta       | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      | 8          | 1      |
+| 2    | Alta       | Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação. | 8          | 1      |
+| 3    | Alta       | Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.                      | 5          | 1      |
+| 3    | Alta       | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.                      | 8          | 1      |
 
 ---
 
@@ -35,121 +36,92 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
 
 - **Prioridade:** Alta
     
-- **Estimativa:** 5h
+- **Estimativa:** 8
     
 - **Status:** 🚧
     
 - **DoD (Critérios de Sucesso):**
     
-    - Interface funcional para cadastro das fontes de dados.
-        
-    - Registro dos metadados necessários para identificação da fonte e do conjunto de dados.
-        
-    - Permitir a importação dos arquivos suportados pela aplicação.
-		
-    - Permitir o cadastro e a importação inicial do conjunto de dados do **CAR**, utilizado como fonte base dos imóveis rurais.
-	    
-    - Armazenamento dos arquivos recebidos na Zona Bruta.
-        
-    - Geração de hash para garantir a integridade do arquivo original.
-        
-    - Registro das informações da importação para permitir sua identificação e rastreabilidade.
-	    
-    - Dados do CAR armazenados de forma que possam ser utilizados nas etapas posteriores de validação, tratamento e cálculo dos indicadores ambientais.
+	- Cadastro de dados na Zona Bruta
+	- Interface para inserção e visualização dos dados e logs
+	- O dado precisa receber um hash no Oracle Storage
+	- Rastreamento da inserção
  
 - **🏃‍ DoR (Definition of Ready):**
     
-    - **Fontes:** Definição das fontes e conjuntos de dados utilizados.
-    
-	- **Dados de entrada:** Disponibilização de pelo menos um conjunto de dados para realização dos testes de ingestão, validação e padronização.
-
-   	- **Modelagem:** Estrutura para fontes e importações definida.
- 
- 	- **Armazenamento:** Zona Bruta definida.
- 
-	- **Design:** Protótipo das telas definido, quando aplicável.
+    - Definição de armazenamento para o DataLake da Zona Bruta (Object Storage OCI)
+    - Ambiente configurado
+    - Protótipo da inserção
+    - Protótipo de visualização do rastreamento da inserção
  
 ---
 
-### **US02 - Validação dos Dados e Quarentena**
+### **US02 - Consultadas pela aplicação**
 
-> **Como Operador de Dados, quero validar os dados importados e identificar registros inválidos para que inconsistências sejam identificadas e os dados confiáveis sejam separados dos que precisam de correção.**
+> **Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação.**
 
 - **Prioridade:** Alta
     
-- **Estimativa:** 8h
+- **Estimativa:** 8
     
 - **Status:** 🚧
     
 - **DoD (Critérios de Sucesso):**
     
-    - Validação da estrutura dos dados importados.
-        
-    - Identificação de campos obrigatórios ausentes ou com formato inválido.
-        
-    - Validação das informações conforme as regras definidas para cada conjunto de dados.
-        
-    - Identificação de inconsistências nos dados geoespaciais, quando aplicável.
-        
-    - Separação dos registros considerados inválidos dos dados aprovados.
-        
-    - Armazenamento dos registros rejeitados na área de Quarentena.
-        
-    - Registro do motivo da rejeição para permitir análise posterior.
-        
-    - Disponibilização das informações de validação para acompanhamento pelo Operador de Dados.
+  - Dados estiverem sendo tratados pelo AirFlow a partir da Zona Bruta.
+  - Dados disponibilizados para consumo do front
+  - Rastreamento do estado do tratamento
 
 - **🏃‍ DoR (Definition of Ready):**
-    
-    - **Dados de entrada:** Dados importados pela US01 disponíveis.
- 
-  	- **Modelagem:** Estrutura para dados validados e Quarentena definida.
 
-  	- **Regras:** Critérios para identificar dados válidos e inválidos definidos.
- 
-  	- **Padronização:** Definição dos formatos esperados para os dados válidos.
- 
-  	- **Ambiente:** Ambiente de desenvolvimento configurado.
+  - Receber os dados da zona bruta
+  - AirFlow configurado em nuvem
 
 ---
 
-### **US03 - Padronização dos Dados**
+### **US03 - Informações serem consumidas pela aplicação**
 
-> **Como Operador de Dados, quero padronizar os dados válidos para que informações provenientes de diferentes fontes possam ser utilizadas de forma consistente nos cruzamentos e cálculos.**
+> **Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.**
 
 - **Prioridade:** Alta
     
-- **Estimativa:** 8h
+- **Estimativa:** 5
     
 - **Status:** 🚧
     
 - **DoD (Critérios de Sucesso):**
-    
-    - Padronização dos formatos dos dados aprovados.
-        
-    - Padronização dos nomes e estruturas dos campos utilizados pela aplicação.
-        
-    - Tratamento de formatos de datas, textos e demais atributos necessários.
-        
-    - Padronização das informações geoespaciais conforme o sistema de referência definido para a aplicação.
-        
-    - Persistência dos dados padronizados na Zona Tratada.
-        
-    - Registro da execução do processo de tratamento e das informações relevantes da operação.
-        
-    - Dados tratados disponíveis para utilização nas etapas posteriores de cruzamento e cálculo dos indicadores.
+
+  - Endpoints documentados no Swagger
+  - Consumo de API retornando dados sobre um determinado imovel passado como parametro
 
 - **🏃‍ DoR (Definition of Ready):**
     
-    - **Dados de entrada:** Dados aprovados pela US02 disponíveis.
+    - Definição dos campos a serem retornados
  
-  	- **Padronização:** Formatos e padrões dos dados definidos.
- 
-  	- **Modelagem:** Estrutura dos dados padronizados definida.
-   
-  	- **Dados geoespaciais:** Sistema de referência definido, quando aplicável.
-     
-	- **Zona Tratada:** Estrutura para armazenamento dos dados tratados definida.
+---
+
+### **US04 - visualizar os imóveis rurais e suas divisões territoriais em um mapa**
+
+> **Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.**
+
+- **Prioridade:** Alta
+    
+- **Estimativa:** 8
+    
+- **Status:** 🚧
+    
+- **DoD (Critérios de Sucesso):**
+
+  	- Visualização em mapa do território
+  	- Filtrar a partir de cod. `imovel/cidade`
+  	- Visualização em tabela dos dados de cada imóvel
+
+- **🏃‍ DoR (Definition of Ready):**
+    
+	- Prototipo (Design)
+    - Definição da Tecnologia para envio de dados espaciais para renderização no front end (Ex.: Hibernate Spatial)
+    - Definição Ferramenta para exibição dos dados geoespaciais pelo front-end (Ex.: Google Maps)
+    - Definição de dados a serem exibidos
 
 ---
 
