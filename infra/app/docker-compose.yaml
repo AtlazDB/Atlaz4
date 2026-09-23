@@ -1,0 +1,64 @@
+# GeoRural DataHub em producao: Oracle + back (Spring Boot) + front (Vue servido pelo nginx).
+# Nao rode "docker compose" direto na primeira vez: use ./deploy.sh, que baixa o codigo
+# do back e do front para src/ antes do build.
+
+services:
+  oracle:
+    image: gvenzl/oracle-free:23
+    container_name: atlaz4-oracle
+    environment:
+      - ORACLE_PASSWORD=${DB_ADMIN_PASSWORD}
+      - APP_USER=${DB_USERNAME}
+      - APP_USER_PASSWORD=${DB_PASSWORD}
+    # So na propria VM: para acessar do seu PC use tunel SSH (ver README).
+    ports:
+      - '127.0.0.1:1521:1521'
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ['CMD', 'healthcheck.sh']
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 60s
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: atlaz4-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle:1521/FREEPDB1
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - OCI_NAMESPACE=${OCI_NAMESPACE}
+      - OCI_BUCKET=${OCI_BUCKET}
+      - OCI_ZONA_BRUTA=${OCI_ZONA_BRUTA:-bruta}
+      - APP_CORS_ORIGENS=${APP_CORS_ORIGENS:-http://localhost:*}
+    # O back le ~/.oci/config (ConfigFileAuthenticationDetailsProvider). A pasta e montada
+    # em /root/.oci e tambem no caminho original, para o key_file do config funcionar
+    # tanto com "~/.oci/..." quanto com caminho absoluto.
+    volumes:
+      - ${OCI_CONFIG_DIR}:/root/.oci:ro
+      - ${OCI_CONFIG_DIR}:${OCI_CONFIG_DIR}:ro
+    ports:
+      - '127.0.0.1:8090:8080'
+    depends_on:
+      oracle:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: atlaz4-frontend
+    ports:
+      - '${APP_PORT:-8081}:80'
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
