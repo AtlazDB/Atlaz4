@@ -22,7 +22,7 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 | 1    | Alta       | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      | 8          | 1      |
 | 2    | Alta       | Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação. | 8          | 1      |
 | 3    | Alta       | Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.                      | 5          | 1      |
-| 3    | Alta       | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.                      | 8          | 1      |
+| 4    | Alta       | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.                      | 8          | 2      |
 
 ---
 
