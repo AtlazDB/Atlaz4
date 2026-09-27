@@ -194,13 +194,17 @@ A aplicação tem duas telas, acessíveis pelo menu superior.
 
 ### Ingestão de dados
 
-Tela usada pelo Operador de Dados para cadastrar fontes e importar arquivos. É dividida em uma
+A tela usada pelo Operador de Dados para cadastrar fontes e importar arquivos. É dividida em uma
 trilha de etapas no topo, a lista de fontes à esquerda e a importação de arquivo à direita.
 
 A trilha de etapas mostra o caminho que o dado percorre: **Cadastro & Importação** (a etapa desta
 tela, sempre acessível), **Validação** e **Padronização** (essas duas aparecem esmaecidas, sem
 link — são as próximas etapas do pipeline, ainda não implementadas como tela própria; a validação
 já acontece durante o processamento, só não tem uma tela dedicada a ela).
+
+<img width="1600" height="813" alt="tela de cadastro" src="https://github.com/user-attachments/assets/c35b35e3-b252-414f-9c6f-e43404e82ed2" />
+<img width="1600" height="818" alt="WhatsApp Image 2026-09-27 at 19 31 01" src="https://github.com/user-attachments/assets/df3a4f5b-7c40-439b-b177-ec69612788d7" />
+
 
 **Passo a passo:**
 
