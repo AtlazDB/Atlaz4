@@ -19,10 +19,10 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 
 | Rank | Prioridade | User Story                                                                                                                                                                                                   | Estimativa | Sprint |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------ |
-| 1    | Alta       | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      | 8          | 1      |
+| 1    | Alta       | Como Operador de Dados, quero importar dados (arquivos) para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação..                      | 8          | 1      |
 | 2    | Alta       | Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação. | 8          | 1      |
 | 3    | Alta       | Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.                      | 5          | 1      |
-| 3    | Alta       | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.                      | 8          | 1      |
+| 4    | Alta       | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.                      | 8          | 2      |
 
 ---
 
@@ -158,8 +158,10 @@ Para o fechamento da Sprint 1, a equipe deve atender aos seguintes requisitos ge
 ## Mockup da aplicação
 [🔗 Visualizar protótipo do GeoRural DataHub](https://github.com/user-attachments/files/31893625/georural_datahub_prototype_1.html)
 
-<!-- 
-# BurndownChart
+---
+
+# BurndownChart da Sprint
+<img width="1192" height="484" alt="Captura de tela 2026-09-27 133002" src="https://github.com/user-attachments/assets/f7aa00e6-17c5-40ac-bce6-30a65df55fa2" />
 
 ---
  # 🎥 Demonstração da aplicação

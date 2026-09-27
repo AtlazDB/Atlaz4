@@ -27,10 +27,10 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 |    ID    | Prioridade | User Story                                                                                                                                                                                                   | Estimativa | Sprint |     Status      |
 | :------: | :--------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------: | :----: | :-------------: |
-| **US01** |    Alta    | Como Operador de Dados, quero cadastrar fontes de dados e importar seus arquivos para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      |    8    |   1    | Em Andamento ⚙️ |
-| **US02** |    Alta    | Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação. |    8     |   1    | Em Andamento ⚙️ |
-| **US03** |    Alta    | Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.                   |    5    |   1    | Em Andamento ⚙️ |
-| **US04** |    Alta    | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.        |    8     |   2    |  Em Andamento ⚙️   |
+| **US01** |    Alta    | Como Operador de Dados, quero importar dados (arquivos) para que os dados recebidos sejam armazenados de forma íntegra e possam ser utilizados pela aplicação.                      |    8    |   1    |  Concluído ✅ |
+| **US02** |    Alta    | Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação. |    8     |   1    |  Concluído ✅ |
+| **US03** |    Alta    | Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.                   |    5    |   1    |   Concluído ✅ |
+| **US04** |    Alta    | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.        |    8     |   2    |   Concluído ✅   |
 |   US05   |    Alta    | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.                    |    8     |   2    |  Planejada 📅   |
 |   US06   |   Média    | Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados.   |    5     |   2    |  Planejada 📅   |
 |   US07   |   Média    | Como Analista, quero consultar os indicadores ambientais dos imóveis rurais por meio de uma API para que eu possa utilizar os resultados da plataforma em outros sistemas.                                   |    5     |   3    |  Planejada 📅   |
@@ -41,7 +41,7 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 |    Sprint    | Início |   Fim   | Documentação | Link video | Status | 
 | :----------: | :----: | :-----: | :----------: | :----: | :----: |
-| 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
+| 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |   link ....            |  Concluído ✅    |
 | 🔖 Sprint 2 | 05/10  | 25/10 |   [Sprint 2](./Documentacao/Processo/Sprints/Sprint2/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
 | 🔖 Sprint 3 | 02/11  | 22/11 |   [Sprint 3](./Documentacao/Processo/Sprints/Sprint3/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
 
