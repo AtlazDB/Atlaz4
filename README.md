@@ -70,6 +70,7 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 * 📑 [**Checklist DoR & DoD**](./Documentacao/Processo/Checklist/README.md) - Critérios de início e conclusão de tarefas.
 * 🌳 [**Estratégia de Branch & Commits**](./Documentacao/Governanca/README.md) - Fluxo de trabalho no GitHub.
+* 📑 [**Manual de Usuário**](https://github.com/AtlazDB/Atlaz4/blob/8bc7f88113dcf9e8c7d8ca469ff6d086c106e64d/Manual%20de%20usu%C3%A1rio) - Manual da aplicação.
 
 ## Equipe
 
