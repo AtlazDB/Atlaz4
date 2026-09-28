@@ -39,9 +39,9 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 ## Cronograma das Sprints <a id="sprint"></a>
 
-|    Sprint    | Início |   Fim   | Documentação | Link video | Status | 
+|    Sprint    | Início |   Fim   | Documentação | Link vídeo | Status | 
 | :----------: | :----: | :-----: | :----------: | :----: | :----: |
-| 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |   link ....            |  Concluído ✅    |
+| 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |   [`vídeo disponível`](https://youtu.be/QcErlgeITU0)          |  Concluído ✅    |
 | 🔖 Sprint 2 | 05/10  | 25/10 |   [Sprint 2](./Documentacao/Processo/Sprints/Sprint2/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
 | 🔖 Sprint 3 | 02/11  | 22/11 |   [Sprint 3](./Documentacao/Processo/Sprints/Sprint3/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
 
@@ -70,6 +70,7 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 
 * 📑 [**Checklist DoR & DoD**](./Documentacao/Processo/Checklist/README.md) - Critérios de início e conclusão de tarefas.
 * 🌳 [**Estratégia de Branch & Commits**](./Documentacao/Governanca/README.md) - Fluxo de trabalho no GitHub.
+* 📑 [**Manual de Usuário**](./Manual%20de%20usu%C3%A1rio.md) - Manual da aplicação.
 
 ## Equipe
 
