@@ -161,11 +161,13 @@ Para o fechamento da Sprint 1, a equipe deve atender aos seguintes requisitos ge
 ---
 
 # BurndownChart da Sprint
-<img width="1192" height="484" alt="Captura de tela 2026-09-27 133002" src="https://github.com/user-attachments/assets/f7aa00e6-17c5-40ac-bce6-30a65df55fa2" />
+<img width="1167" height="479" alt="image" src="https://github.com/user-attachments/assets/2bd5bbfa-6007-4f0e-9f53-47d128966178" />
+
 
 ---
  # 🎥 Demonstração da aplicação
 
- > Clique na imagem abaixo para assistir ao vídeo da demonstração da Sprint. %-->
+ > Clique na imagem abaixo para assistir ao vídeo da demonstração da Sprint.
+[<img width="1428" height="705" alt="Demonstração da aplicação" src="https://github.com/user-attachments/assets/39af5bfd-e1bd-44b9-9248-85200090dd4b" />](https://youtu.be/QcErlgeITU0)
 
 ---
