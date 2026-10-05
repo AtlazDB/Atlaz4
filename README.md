@@ -31,10 +31,16 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 | **US02** |    Alta    | Como Operador de Dados, quero disponibilizar os dados territoriais do CAR após seu processamento inicial para que as informações dos imóveis rurais possam ser consultadas pela aplicação. |    8     |   1    |  Concluído ✅ |
 | **US03** |    Alta    | Como Analista, quero consultar os imóveis rurais por meio de uma API para que suas informações territoriais possam ser consumidas pela aplicação.                   |    5    |   1    |   Concluído ✅ |
 | **US04** |    Alta    | Como Analista, quero visualizar os imóveis rurais e suas divisões territoriais em um mapa para que eu possa localizar e analisar espacialmente os imóveis do Paraná.        |    8     |   2    |   Concluído ✅   |
-|   US05   |    Alta    | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.                    |    8     |   2    |  Em andamento 🚧   |
-|   US06   |   Média    | Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados.   |    5     |   2    |  Em andamento 🚧   |
-|   US07   |   Média    | Como Analista, quero consultar os indicadores ambientais dos imóveis rurais por meio de uma API para que eu possa utilizar os resultados da plataforma em outros sistemas.                                   |    5     |   3    |  Em andamento 🚧   |
-|   US08   |   Baixa    | Como Analista, quero visualizar os imóveis rurais e suas informações ambientais em um mapa, gráficos e tabelas para que eu possa analisar os indicadores de forma visual e facilitar a tomada de decisão.    |    8     |   3    |  Planejada 📅   |
+|   US05   |    Alta    | Como Operador de Dados, quero cadastrar fontes informando o link de acesso, o método de requisição e a frequência de coleta, e acompanhar cada execução, para que os dados sejam atualizados automaticamente e eu identifique falhas sem depender do envio manual de arquivos. |    8     |   2    |  Em Andamento ⚙️   |
+|   US06   |    Alta    | Como Operador de Dados, quero definir como cada coluna da fonte é tratada (destino, tipo de dado e regras de validação) para que somente dados padronizados e válidos cheguem à zona tratada. |    8     |   2    |  Em Andamento ⚙️   |
+|   US07   |    Alta    | Como Operador de Dados, quero consultar e tratar os registros rejeitados na validação para que eu possa corrigir, aprovar ou descartar cada inconsistência com justificativa registrada. |    5     |   2    |  Em Andamento ⚙️   |
+|   US08   |    Alta    | Como Analista, quero consultar os indicadores de Reserva Legal e de focos de calor de cada imóvel rural para que eu possa avaliar sua conformidade ambiental. |    5     |   2    |  Em Andamento ⚙️   |
+|   US09   |   Média    | Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados. |    5     |   3    |  Planejada 📅   |
+|   US10   |   Média    | Como Analista, quero consultar os demais indicadores ambientais de cada imóvel rural (cobertura vegetal, APP, áreas protegidas, embargos e desmatamento) em mapa, gráficos e tabelas para que eu possa avaliar sua situação e seus riscos ambientais. |    8     |   3    |  Planejada 📅   |
+|   US11   |   Média    | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões. |    8     |   2    |  Planejada 📅    |
+|   US12   |   Baixa    | Como Analista, quero visualizar os indicadores agregados por município e exportá-los por download e por meio de uma API para que eu possa analisar as regiões e utilizar os resultados em outros sistemas. |    8     |   3    |  Planejada 📅   |
+
+
 ---
 
 ## Cronograma das Sprints <a id="sprint"></a>
@@ -43,7 +49,7 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 | :----------: | :----: | :-----: | :----------: | :----: | :----: |
 | 🔖 Sprint 1 | 07/09  | 27/09 |   [Sprint 1](./Documentacao/Processo/Sprints/Sprint1/README.md)             |   [`vídeo disponível`](https://youtu.be/QcErlgeITU0)          |  Concluído ✅    |
 | 🔖 Sprint 2 | 05/10  | 25/10 |   [Sprint 2](./Documentacao/Processo/Sprints/Sprint2/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
-| 🔖 Sprint 3 | 02/11  | 22/11 |   [Sprint 3](./Documentacao/Processo/Sprints/Sprint3/README.md)             |   Em Produção 🎬            |  Em Andamento ⚙️    |
+| 🔖 Sprint 3 | 02/11  | 22/11 |   [Sprint 3](./Documentacao/Processo/Sprints/Sprint3/README.md)             |   -            |  Planejada 📅    |
 
 ---
 ## 💻 Tecnologias <a id="tecnologias"></a>
@@ -52,6 +58,9 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
   <a href="https://www.oracle.com/java/"><img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"/></a>
   <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/></a>
   <a href="https://www.oracle.com/database/"><img src="https://img.shields.io/badge/Oracle_Spatial-F80000?style=for-the-badge&logo=oracle&logoColor=white"/></a>
+  <a href="https://airflow.apache.org/"><img src="https://img.shields.io/badge/Apache_Airflow-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white"/></a>
+  <a href="https://www.oracle.com/cloud/"><img src="https://img.shields.io/badge/Oracle_Cloud-F80000?style=for-the-badge&logo=oracle&logoColor=white"/></a>
+  <a href="https://www.keycloak.org/"><img src="https://img.shields.io/badge/Keycloak-4D4D4D?style=for-the-badge&logo=keycloak&logoColor=white"/></a>
   <a href="https://vuejs.org/"><img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D"/></a>
   <a href="https://leafletjs.com/"><img src="https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white"/></a>
   <a href="https://www.chartjs.org/"><img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white"/></a>
