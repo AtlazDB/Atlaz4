@@ -2,26 +2,28 @@
 
 # Documentação - Sprint 2
 
-> Status da Sprint: Em andamento 🚧
+> Status da Sprint: Planejada 📅
 
 ---
 
 ## 🏅 Desafio
 
-Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural DataHub**. Isso inclui o cadastro das fontes de dados, a importação dos arquivos para a Zona Bruta, a validação das informações recebidas e a padronização dos dados válidos para utilização nas etapas posteriores de cruzamento geoespacial e cálculo dos indicadores ambientais.
+Montar a arquitetura de dados do **GeoRural DataHub** para que ela funcione em escala real. As fontes passam a ser coletadas **automaticamente** pelo **Apache Airflow**, a partir de um link e de uma frequência, rodando numa máquina separada da aplicação. Os dados recebidos são **tratados por regras** definidas pelo usuário para cada coluna. O que não passa nas regras vai para a **quarentena**, onde é analisado, corrigido ou descartado. Por fim, calculamos os dois primeiros **indicadores ambientais** por imóvel: Reserva Legal (IRL) e Focos de Calor (IFC). Como entrega extra, o auditor passa a consultar e comparar as **versões** dos dados e rastrear cada resultado até a sua origem.
 
 ---
 
-| Capacidade estimada da Equipe por Sprint:               | pontos (21)                                          |
+| Capacidade estimada da Equipe por Sprint:               | pontos (26)                                          |
 | ------------------------------------------------------- | -------------------------------------------- |
-| Meta da Sprint:                                         | User Stories de rank 1 e 2 (Total de 13 pontos)    |
-| Previsão da Sprint (extras, sem compromisso de entrega) | User Story de rank 3 (Total de 5 pontos)           |
+| Meta da Sprint:                                         | User Stories de rank 1, 2, 3 e 4 (Total de 26 pontos)    |
+| Previsão da Sprint (extras, sem compromisso de entrega) | User Story de rank 5 (Total de 8 pontos)           |
 
 | Rank | Prioridade | User Story                                                                                                                                                                                                   | Estimativa | Sprint |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------ |
-|   1   |    Alta    | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.                    |    8     |   2    |
-|   2   |   Média    | Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados.   |    5     |   2    |
-|   3   |   Média    | Como Analista, quero consultar os indicadores ambientais dos imóveis rurais por meio de uma API para que eu possa utilizar os resultados da plataforma em outros sistemas.                                   |    5     |   3    |
+| 1    | Alta       | Como Operador de Dados, quero cadastrar fontes informando o link de acesso, o método de requisição e a frequência de coleta, e acompanhar cada execução, para que os dados sejam atualizados automaticamente e eu identifique falhas sem depender do envio manual de arquivos. | 8          | 2      |
+| 2    | Alta       | Como Operador de Dados, quero definir como cada coluna da fonte é tratada (destino, tipo de dado e regras de validação) para que somente dados padronizados e válidos cheguem à zona tratada. | 8          | 2      |
+| 3    | Alta       | Como Operador de Dados, quero consultar e tratar os registros rejeitados na validação para que eu possa corrigir, aprovar ou descartar cada inconsistência com justificativa registrada. | 5          | 2      |
+| 4    | Alta       | Como Analista, quero consultar os indicadores de Reserva Legal e de focos de calor de cada imóvel rural para que eu possa avaliar sua conformidade ambiental. | 5          | 2      |
+| 5    | Média      | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões. | 8          | 2      |
 
 ---
 
@@ -29,74 +31,150 @@ Estabelecer o fluxo inicial de entrada e preparação dos dados do **GeoRural Da
 
 Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (Definition of Done)** e **DoR (Definition of Ready)**, que são os critérios específicos para considerar cada funcionalidade concluída.
 
-### **US05 - Consultar o histórico das versões dos dados e indicadores e sua origem**
+* **DoR:** tudo o que precisa existir para **começar** a história.
+* **DoD:** tudo o que precisa estar pronto para a história ser considerada **finalizada**.
+* Nenhuma história depende de outra: cada uma pode ser iniciada e entregue sozinha.
 
-> **Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.**
+### **US05 - Coleta automática de fontes e acompanhamento das execuções**
+
+> **Como Operador de Dados, quero cadastrar fontes informando o link de acesso, o método de requisição e a frequência de coleta, e acompanhar cada execução, para que os dados sejam atualizados automaticamente e eu identifique falhas sem depender do envio manual de arquivos.**
 
 - **Prioridade:** Alta
     
 - **Estimativa:** 8
     
-- **Status:** 🚧
+- **Status:** 📅
     
 - **DoD (Critérios de Sucesso):**
     
-	- Cadastro de dados na Zona Bruta
-	- Interface para inserção e visualização dos dados e logs
-	- O dado precisa receber um hash no Oracle Storage
-	- Rastreamento da inserção
+	- Cadastro de fonte com link de acesso, método HTTP (GET ou POST), cabeçalhos, formato do arquivo e frequência de coleta
+	- Coleta feita automaticamente pelo Airflow no horário definido
+	- Botão "Executar agora" para coletar na hora
+	- Arquivo coletado salvo na Zona Bruta com hash
+	- Coleta igual à anterior registrada como "sem mudança"
+	- Tela de execuções com etapa, status, duração, quantidade de registros e, em caso de falha, a mensagem de erro
+	- Airflow rodando em uma máquina separada da aplicação
+	- Endpoints documentados no Swagger
  
 - **🏃‍ DoR (Definition of Ready):**
     
-    - Definição de armazenamento para o DataLake da Zona Bruta (Object Storage OCI)
-    - Ambiente configurado
-    - Protótipo da inserção
-    - Protótipo de visualização do rastreamento da inserção
+    - Protótipo do cadastro de fonte e da tela de execuções
+    - Um link de fonte pública testado (ex.: malha municipal do IBGE)
+    - Máquina do Airflow disponível
+    - Campos do cadastro de fonte definidos
  
 ---
 
-### **US06 - Controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário.**
+### **US06 - Mapeamento de colunas e regras de tratamento**
 
-> **Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados.**
+> **Como Operador de Dados, quero definir como cada coluna da fonte é tratada (destino, tipo de dado e regras de validação) para que somente dados padronizados e válidos cheguem à zona tratada.**
 
-- **Prioridade:** Média
+- **Prioridade:** Alta
     
-- **Estimativa:** 5
+- **Estimativa:** 8
     
-- **Status:** 🚧
+- **Status:** 📅
     
 - **DoD (Critérios de Sucesso):**
     
-  - Dados estiverem sendo tratados pelo AirFlow a partir da Zona Bruta.
-  - Dados disponibilizados para consumo do front
-  - Rastreamento do estado do tratamento
+	- Tela de mapeamento de colunas por fonte (coluna de origem → campo de destino), com o tipo de dado
+	- Regras por coluna: obrigatório, bloquear regressão, validar geometria, validar CPF/CNPJ, domínio (lista de valores permitidos) e integridade cruzada (valor precisa existir em outra tabela tratada)
+	- Registros aprovados gravados na Zona Tratada
+	- Registros reprovados enviados à quarentena com o tipo de erro e o motivo
+	- Regras aplicadas no processamento do CAR que já existe
+	- Nenhuma geometria corrigida sem registro da correção
+	- Endpoints documentados no Swagger
 
 - **🏃‍ DoR (Definition of Ready):**
 
-  - Receber os dados da zona bruta
-  - AirFlow configurado em nuvem
+	- Lista de regras e de tipos de erro definida
+	- Tabelas de domínio definidas (ex.: situação do imóvel AT, PE, CA, SU)
+	- Protótipo da tela de mapeamento
+	- Arquivo de exemplo com erros conhecidos
 
 ---
 
-### **US07  - Consultar os indicadores ambientais dos imóveis rurais por meio de uma API para que eu possa utilizar os resultados da plataforma em outros sistemas.**
+### **US07 - Tratamento da quarentena**
 
-> **Como Analista, quero consultar os indicadores ambientais dos imóveis rurais por meio de uma API para que eu possa utilizar os resultados da plataforma em outros sistemas.**
+> **Como Operador de Dados, quero consultar e tratar os registros rejeitados na validação para que eu possa corrigir, aprovar ou descartar cada inconsistência com justificativa registrada.**
 
-- **Prioridade:** Média
+- **Prioridade:** Alta
     
 - **Estimativa:** 5
     
-- **Status:** 🚧
+- **Status:** 📅
     
 - **DoD (Critérios de Sucesso):**
 
-  - Endpoints documentados no Swagger
-  - Consumo de API retornando dados sobre um determinado imovel passado como parametro
+	- Tela da quarentena com totais por status e filtros (tipo de erro, fonte e status)
+	- Detalhe do registro com o valor recebido, o motivo da rejeição e o dado original
+	- Geometria exibida no mapa, com o ponto do problema destacado
+	- Ações: iniciar análise, corrigir manualmente, revalidar e aprovar, descartar com justificativa
+	- Registro aprovado gravado na Zona Tratada
+	- Toda ação registrada com data e justificativa
+	- Endpoints documentados no Swagger
 
 - **🏃‍ DoR (Definition of Ready):**
     
-    - Definição dos campos a serem retornados
+	- Protótipo da tela de quarentena
+	- Registros de exemplo na quarentena (dados de demonstração)
+	- Status da análise definidos (Pendente, Em análise, Corrigido, Descartado)
  
+---
+
+### **US08 - Indicadores de Reserva Legal (IRL) e Focos de Calor (IFC)**
+
+> **Como Analista, quero consultar os indicadores de Reserva Legal e de focos de calor de cada imóvel rural para que eu possa avaliar sua conformidade ambiental.**
+
+- **Prioridade:** Alta
+    
+- **Estimativa:** 5
+    
+- **Status:** 📅
+    
+- **DoD (Critérios de Sucesso):**
+
+	- IRL calculado por imóvel: área de Reserva Legal ÷ área do imóvel, comparada ao mínimo de 20%
+	- IFC calculado por imóvel: focos de calor dentro do imóvel a cada 1.000 hectares
+	- Cálculo feito no banco Oracle (PL/SQL)
+	- Cada indicador guarda a versão dos dados e a regra de cálculo usadas
+	- Indicadores exibidos no detalhe do imóvel no mapa
+	- Endpoint de consulta documentado no Swagger
+	- Memória de cálculo documentada
+
+- **🏃‍ DoR (Definition of Ready):**
+    
+	- Fórmulas dos dois indicadores definidas
+	- Arquivo de Reserva Legal do CAR e arquivo de focos de calor do INPE (Paraná) disponíveis
+	- Protótipo do card de indicadores
+
+---
+
+### **US11 - Histórico de versões e rastreabilidade** *(entrega extra)*
+
+> **Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.**
+
+- **Prioridade:** Média
+
+- **Estimativa:** 8
+
+- **Status:** 📅
+
+- **DoD (Critérios de Sucesso):**
+
+	- Histórico do imóvel guardado a cada carga (a versão anterior não é apagada)
+	- Lista de versões de cada conjunto de dados, com data, arquivo de origem, hash e quantidade de registros
+	- Comparação entre duas versões de um imóvel, mostrando o que mudou
+	- Rastreio de um resultado até a fonte, o arquivo (hash), a execução e a regra usada
+	- Versões já geradas não podem ser alteradas
+	- Endpoints documentados no Swagger
+
+- **🏃‍ DoR (Definition of Ready):**
+
+	- Protótipo da tela de versões e da comparação
+	- Pelo menos duas cargas do mesmo conjunto disponíveis (podem ser dados de demonstração)
+	- Campos exibidos na comparação definidos
+
 ---
 
 ## 🏃‍ DoR - Definition of Ready (Sprint 2)
@@ -105,17 +183,17 @@ Estes critérios garantem que o time tem todos os insumos necessários para inic
 
 - **Clareza:** User Stories definidas com objetivos de negócio e critérios de aceitação básicos estabelecidos.
     
-- **Fontes de dados:** Definição das fontes e conjuntos de dados que serão utilizados como entrada na Sprint.
+- **Fontes de dados:** Links das fontes públicas e arquivos de exemplo (CAR, Reserva Legal e focos de calor) disponíveis.
     
-- **Dados de entrada:** Disponibilização de pelo menos um conjunto de dados para realização do desenvolvimento e testes.
+- **Dados de demonstração:** Registros de exemplo de execuções e de quarentena carregados no banco de desenvolvimento.
 
-- **Regras:** Regras de validação e padronização necessárias definidas
+- **Regras:** Regras de tratamento, tipos de erro, tabelas de domínio e fórmulas dos indicadores definidas.
     
-- **Modelagem:** Estrutura inicial do banco de dados definida para o catálogo de fontes, dados importados e registros em Quarentena.
+- **Modelagem:** Estrutura do banco definida para fontes, mapeamento de colunas, quarentena e indicadores.
     
-- **Ambiente:** Ambiente de desenvolvimento e infraestrutura necessários para execução da aplicação configurados.
+- **Ambiente:** Ambiente de desenvolvimento configurado e máquina do Airflow disponível.
     
-- **Design:** Protótipo das interfaces necessárias para cadastro, importação e acompanhamento dos dados definido, quando aplicável.
+- **Design:** Protótipo das telas de fontes, execuções, mapeamento, quarentena, indicadores e versões definido.
 
 
 ---
@@ -127,21 +205,16 @@ Para o fechamento da Sprint 2, a equipe deve atender aos seguintes requisitos ge
 * Integração contínua: Código consolidado na branch `main` sem quebras de build.
 * Documentação técnica: README da sprint atualizado com o status final das entregas.
 
----
-
-<!-- ## Mockup da aplicação
-[🔗 Visualizar protótipo do GeoRural DataHub](https://github.com/user-attachments/files/31893625/georural_datahub_prototype_1.html)
 
 ---
 
 # BurndownChart da Sprint
-<img width="1167" height="479" alt="image" src="https://github.com/user-attachments/assets/2bd5bbfa-6007-4f0e-9f53-47d128966178" />
+_Disponível ao final da Sprint._
 
 
 ---
  # 🎥 Demonstração da aplicação
 
- > Clique na imagem abaixo para assistir ao vídeo da demonstração da Sprint.
-[<img width="1428" height="705" alt="Demonstração da aplicação" src="https://github.com/user-attachments/assets/39af5bfd-e1bd-44b9-9248-85200090dd4b" />](https://youtu.be/QcErlgeITU0)
+ > Vídeo da demonstração da Sprint: _em produção_ 🎬
 
 ---
