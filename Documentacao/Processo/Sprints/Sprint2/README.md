@@ -2,7 +2,7 @@
 
 # Documentação - Sprint 2
 
-> Status da Sprint: Planejada 📅
+> Status da Sprint: Em andamento!
 
 ---
 
@@ -23,7 +23,7 @@ Montar a arquitetura de dados do **GeoRural DataHub** para que ela funcione em e
 | 2    | Alta       | Como Operador de Dados, quero definir como cada coluna da fonte é tratada (destino, tipo de dado e regras de validação) para que somente dados padronizados e válidos cheguem à zona tratada. | 8          | 2      |
 | 3    | Alta       | Como Operador de Dados, quero consultar e tratar os registros rejeitados na validação para que eu possa corrigir, aprovar ou descartar cada inconsistência com justificativa registrada. | 5          | 2      |
 | 4    | Alta       | Como Analista, quero consultar os indicadores de Reserva Legal e de focos de calor de cada imóvel rural para que eu possa avaliar sua conformidade ambiental. | 5          | 2      |
-| 5    | Média      | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões. | 8          | 2      |
+| 5    | Média      | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões. | 8          | 3      |
 
 ---
 
@@ -150,9 +150,9 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
 
 ---
 
-### **US11 - Histórico de versões e rastreabilidade** *(entrega extra)*
+### **US09 - Histórico de versões e rastreabilidade** *(entrega extra)*
 
-> **Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.**
+> **Como Auditor, quero consultar o histórico das versões dos dados indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões.**
 
 - **Prioridade:** Média
 
