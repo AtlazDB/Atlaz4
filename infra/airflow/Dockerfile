@@ -9,8 +9,12 @@ FROM apache/airflow:3.3.1
 #
 # requests fica sem pin de proposito: o Airflow ja traz o dele, e fixar versao
 # aqui so criaria conflito de resolucao.
+#
+# oracledb: driver do Oracle em modo "thin" (Python puro), sem Instant Client,
+# entao funciona igual no PC (x86) e na VM (ARM).
 RUN pip install --no-cache-dir \
       oci \
+      oracledb \
       geopandas==1.1.4 \
       shapely==2.1.2 \
       pyproj==3.8.0 \

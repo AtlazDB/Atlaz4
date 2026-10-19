@@ -1,0 +1,2 @@
+# O pacote georural é código comum das DAGs, não DAG: não precisa ser analisado pelo Airflow.
+georural/

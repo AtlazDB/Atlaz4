@@ -1,0 +1,9 @@
+# Senhas e configuração de cada máquina
+.env
+.env.local
+
+# Gerados pelo Airflow e pelo Python
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
