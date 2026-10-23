@@ -68,6 +68,20 @@ def charset(shp: Path) -> str:
     return f"cp{nome}" if nome.isdigit() else nome
 
 
+def ler_colunas(shp: Path, nomes: list[str]):
+    """Só as colunas pedidas, sem a geometria: uma passada rápida pelo arquivo inteiro.
+
+    Os nomes são procurados ignorando maiúsculas e voltam com o nome pedido; coluna que o
+    arquivo não tem fica de fora do resultado.
+    """
+    por_nome = {campo.lower(): campo for campo in pyogrio.read_info(shp)["fields"]}
+    existentes = {por_nome[n.lower()]: n for n in nomes if n.lower() in por_nome}
+    tabela = pyogrio.read_dataframe(
+        shp, columns=list(existentes), read_geometry=False, encoding=charset(shp)
+    )
+    return tabela.rename(columns=existentes)
+
+
 def ler_em_lotes(shp: Path, tamanho_lote: int) -> Iterator[tuple[int, "object"]]:
     """Lê o shapefile em pedaços de `tamanho_lote` registros, já em SRID 4326.
 

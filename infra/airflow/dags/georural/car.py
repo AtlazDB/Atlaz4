@@ -16,10 +16,13 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
+import pandas as pd
+
 from georural import bucket, gravacao, shapefile
 from georural.banco import conectar
 from georural.config import Config
-from georural.validacao import ValidadorImovel
+from georural.validacao import (COLUNA_AREA, COLUNA_ATUALIZACAO, COLUNA_COD_IMOVEL, COLUNA_CRIACAO,
+                                COLUNA_SITUACAO, ValidadorImovel, planejar_desempate)
 
 log = logging.getLogger(__name__)
 
@@ -32,6 +35,8 @@ class Resumo:
     lidos: int = 0
     validos: int = 0
     invalidos: int = 0
+    descartados_automaticamente: int = 0  # dentro de `invalidos`: repetições resolvidas pelo desempate
+    substituidos: int = 0  # registros abertos de cargas anteriores que esta carga encerrou
 
 
 def preparar(cfg: Config, arquivo_id: int, ja_reservado: bool, dag_run_id: str | None) -> int:
@@ -66,7 +71,7 @@ def processar(cfg: Config, arquivo_id: int, execucao_id: int) -> Resumo:
             shapefiles = shapefile.extrair(zip_local, pasta / "extraido")
             zip_local.unlink()  # libera o disco: daqui para frente só os .shp importam
 
-            validador = ValidadorImovel()
+            validador = ValidadorImovel(_planejar_desempate(shapefiles))
             try:
                 with con.cursor() as cur:
                     versao = gravacao.criar_versao(cur, execucao_id)
@@ -78,8 +83,8 @@ def processar(cfg: Config, arquivo_id: int, execucao_id: int) -> Resumo:
                             _gravar_lote(cur, validador, lote, primeira_linha, versao, execucao_id, resumo)
                             log.info("%s: %d lidos até agora", shp.name, resumo.lidos)
 
-                    gravacao.concluir(cur, arquivo_id, execucao_id, versao,
-                                      resumo.lidos, resumo.validos, resumo.invalidos)
+                    resumo.substituidos = gravacao.concluir(cur, arquivo_id, execucao_id, versao,
+                                                            resumo.lidos, resumo.validos, resumo.invalidos)
                 con.commit()
             except Exception:
                 con.rollback()
@@ -87,6 +92,17 @@ def processar(cfg: Config, arquivo_id: int, execucao_id: int) -> Resumo:
 
     log.info("Arquivo %s processado: %s", arquivo_id, resumo)
     return resumo
+
+
+def _planejar_desempate(shapefiles):
+    """Passada rápida pelas colunas do desempate (sem geometria), para saber quem fica com cada
+    código repetido antes de gravar o primeiro lote: a versão que vence pode vir depois."""
+    colunas = [COLUNA_COD_IMOVEL, COLUNA_SITUACAO, COLUNA_AREA, COLUNA_ATUALIZACAO, COLUNA_CRIACAO]
+    chaves = pd.concat([shapefile.ler_colunas(shp, colunas) for shp in shapefiles], ignore_index=True)
+    plano = planejar_desempate(chaves)
+    log.info("%d códigos repetidos no arquivo; %d repetições resolvidas sozinhas pelo desempate",
+             len(plano), sum(len(regra.descartes) for regra in plano.values()))
+    return plano
 
 
 def _gravar_lote(cur, validador, lote, primeira_linha, versao, execucao_id, resumo: Resumo) -> None:
@@ -100,10 +116,11 @@ def _gravar_lote(cur, validador, lote, primeira_linha, versao, execucao_id, resu
         (aprovados if resultado.aprovado else reprovados).append(resultado)
 
     gravacao.gravar_imoveis(cur, versao.id, aprovados)
-    gravacao.gravar_quarentena(cur, execucao_id, reprovados)
+    gravacao.gravar_quarentena(cur, execucao_id, versao.id, reprovados)
     resumo.lidos += len(aprovados) + len(reprovados)
     resumo.validos += len(aprovados)
     resumo.invalidos += len(reprovados)
+    resumo.descartados_automaticamente += sum(r.descartado_automaticamente for r in reprovados)
 
 
 def registrar_falha(cfg: Config, arquivo_id: int, execucao_id: int | None, erro: BaseException | str) -> None:
