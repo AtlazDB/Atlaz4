@@ -1,17 +1,26 @@
 """Toda a escrita do processamento no Oracle, em SQL direto — o mesmo SQL do GravadorImoveis
 do back-end. Usa as tabelas como estão hoje (Flyway V1 a V7).
 
-Quando o pkg_tratada (Tarefa 1) existir, a gravação dos imóveis passa a chamar o pacote.
+A gravação dos aprovados ainda é o MERGE daqui; a quarentena já sai completa (tabela de
+destino, chave, tipo de erro, versão e geometria), que é o que o "Revalidar" da tela precisa
+para o pkg_tratada.gravar_registro gravar o registro depois.
 """
 
 from dataclasses import dataclass
 
 import oracledb
+import shapely
 
 from georural import sdo
 from georural.validacao import Resultado
 
 CONJUNTO_IMOVEIS = "imoveis_rurais"
+# Tabela de destino gravada na quarentena (registro_quarentena.entidade), a mesma da regra_campo
+ENTIDADE_IMOVEIS = "imovel_rural"
+# Quem aparece como autor da análise nos registros que a própria DAG descarta. O começo
+# ("DAG processar_arquivo") é o que o pkg_tratada.substituir_pendentes procura para
+# encerrar esses descartes quando uma carga mais nova decide de novo: não mude sem mudar lá.
+AUTOR_DESCARTE_AUTOMATICO = "DAG processar_arquivo (desempate de código repetido)"
 
 SQL_MERGE_IMOVEL = """
     MERGE INTO imovel_rural d
@@ -29,8 +38,13 @@ SQL_MERGE_IMOVEL = """
 """
 
 SQL_QUARENTENA = """
-    INSERT INTO registro_quarentena (execucao_id, numero_linha, campo, motivo, payload)
-    VALUES (:execucao_id, :numero_linha, :campo, :motivo, :payload)
+    INSERT INTO registro_quarentena (execucao_id, numero_linha, campo, motivo, payload,
+           entidade, chave_natural, tipo_erro, valor_recebido, dataset_versao_id, geometria,
+           status_analise, justificativa, analisado_por, analisado_em)
+    VALUES (:execucao_id, :numero_linha, :campo, :motivo, :payload,
+            :entidade, :chave_natural, :tipo_erro, :valor_recebido, :dataset_versao_id, :geometria,
+            :status_analise, :justificativa, :analisado_por,
+            CASE WHEN :descartado = 1 THEN SYSTIMESTAMP END)
 """
 
 
@@ -176,10 +190,11 @@ def gravar_imoveis(cur, dataset_versao_id: int, aprovados: list[Resultado]) -> N
     )
 
 
-def gravar_quarentena(cur, execucao_id: int, reprovados: list[Resultado]) -> None:
+def gravar_quarentena(cur, execucao_id: int, dataset_versao_id: int, reprovados: list[Resultado]) -> None:
     if not reprovados:
         return
-    cur.setinputsizes(payload=oracledb.DB_TYPE_CLOB)
+    tipos = sdo.TiposSdo(cur.connection)
+    cur.setinputsizes(payload=oracledb.DB_TYPE_CLOB, geometria=tipos.geometria)
     cur.executemany(
         SQL_QUARENTENA,
         [
@@ -189,16 +204,37 @@ def gravar_quarentena(cur, execucao_id: int, reprovados: list[Resultado]) -> Non
                 "campo": r.campo,
                 "motivo": r.motivo[:400],
                 "payload": r.payload_json(),
+                "entidade": ENTIDADE_IMOVEIS,
+                "chave_natural": (r.cod_imovel or "")[:100] or None,
+                "tipo_erro": r.tipo_erro,
+                "valor_recebido": r.valor_recebido,
+                "dataset_versao_id": dataset_versao_id,
+                "geometria": geometria_quarentena(tipos, r.geometria_recebida),
+                "status_analise": "DESCARTADO" if r.descartado_automaticamente else "PENDENTE",
+                "justificativa": r.justificativa if r.descartado_automaticamente else None,
+                "analisado_por": AUTOR_DESCARTE_AUTOMATICO if r.descartado_automaticamente else None,
+                "descartado": 1 if r.descartado_automaticamente else 0,
             }
             for r in reprovados
         ],
     )
 
 
+def geometria_quarentena(tipos: sdo.TiposSdo, geometria):
+    """A geometria como chegou, para o visualizador e o "Revalidar". Só polígonos (os outros
+    tipos o sdo.py não converte: ficam sem geometria). Vai no sentido que o Oracle exige, para
+    um registro reprovado por outro motivo (código duplicado) poder ser gravado depois."""
+    if geometria is None or geometria.is_empty or geometria.geom_type not in ("Polygon", "MultiPolygon"):
+        return None
+    return tipos.converter(shapely.orient_polygons(geometria, exterior_cw=False), sdo.SRID_BANCO)
+
+
 # ------------------------------------------------------------------ fim
 
 def concluir(cur, arquivo_id: int, execucao_id: int, versao: Versao,
-             lidos: int, validos: int, invalidos: int) -> None:
+             lidos: int, validos: int, invalidos: int) -> int:
+    """Fecha a carga. Devolve quantos registros antigos da quarentena ela substituiu
+    (pkg_tratada.substituir_pendentes: reprocessar não duplica a fila)."""
     cur.execute(
         """
         UPDATE execucao SET status = 'CONCLUIDA', finalizada_em = SYSTIMESTAMP,
@@ -208,10 +244,12 @@ def concluir(cur, arquivo_id: int, execucao_id: int, versao: Versao,
         lidos=lidos, validos=validos, invalidos=invalidos, id=execucao_id,
     )
     cur.execute("UPDATE dataset_versao SET registros = :n WHERE id = :id", n=validos, id=versao.id)
+    substituidos = int(cur.callfunc("pkg_tratada.substituir_pendentes", oracledb.DB_TYPE_NUMBER, [execucao_id]))
     cur.execute(
         "UPDATE arquivo_bruto SET status = 'PROCESSADO', processado_em = SYSTIMESTAMP WHERE id = :id",
         id=arquivo_id,
     )
+    return substituidos
 
 
 def falhar(con, arquivo_id: int, execucao_id: int | None, mensagem: str) -> None:
