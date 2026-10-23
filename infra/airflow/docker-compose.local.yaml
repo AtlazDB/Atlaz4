@@ -1,0 +1,43 @@
+# Airflow para DESENVOLVIMENTO no seu computador (Docker Desktop).
+#
+# Um container só, com o "airflow standalone" (scheduler + api-server + processador de DAGs).
+# Não é para produção: na VM o Airflow roda com o docker-compose.yaml completo.
+#
+# Pré-requisitos:
+#   1. Oracle local no ar:  cd Atlaz4-BackEnd && docker compose up -d
+#   2. .env.local preenchido (copie de .env.local.example)
+#
+# Subir:   docker compose -f docker-compose.local.yaml --env-file .env.local up --build
+# Abrir:   http://localhost:8088  (sem login: em dev todo mundo é admin)
+# Parar:   Ctrl+C, ou docker compose -f docker-compose.local.yaml down
+
+services:
+  airflow:
+    build: .
+    # Nome próprio: o build nunca sobrescreve a tag oficial apache/airflow (armadilha do README).
+    image: atlaz4/airflow:local
+    container_name: atlaz4-airflow-local
+    command: standalone
+    env_file: .env.local
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      # Dev: sem tela de login. NUNCA use isto numa VM com porta aberta.
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+      # Arquivo de DAG novo ou alterado aparece em até 30 s
+      AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "30"
+      # As DAGs importam o pacote dags/georural; o Airflow 3 não põe a pasta no caminho sozinho.
+      PYTHONPATH: /opt/airflow/dags
+      GEORURAL_OCI_AUTH: config
+      OCI_CONFIG_FILE: /home/airflow/.oci/config
+    ports:
+      # porta do seu computador : porta do Airflow dentro do container
+      - "${AIRFLOW_PORTA:-8088}:8080"
+    volumes:
+      # As DAGs são lidas direto da pasta: editou, salvou, o Airflow recarrega.
+      - ./dags:/opt/airflow/dags
+      # Sua chave da API da OCI (a mesma que o back-end usa), só leitura.
+      - ${OCI_CONFIG_DIR:?defina OCI_CONFIG_DIR no .env.local}:/home/airflow/.oci:ro
+    # Para o container enxergar o Oracle que está publicado na porta 1521 do seu computador.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    mem_limit: 4g
