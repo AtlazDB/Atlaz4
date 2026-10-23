@@ -29,7 +29,7 @@ back-end e o **bucket real** da OCI (com a sua chave da API, a mesma do back-end
    ```bash
    docker compose -f docker-compose.local.yaml --env-file .env.local up --build
    ```
-5. Abra http://localhost:8080 (sem login em dev) e rode a DAG `teste_conexoes`:
+5. Abra http://localhost:8088 (sem login em dev; a 8080 fica para o back-end) e rode a DAG `teste_conexoes`:
    as duas tarefas verdes = Oracle e bucket funcionando
 6. Ative a DAG `varredor_bruta` e, no `.env` do **back-end**, use `AIRFLOW_HABILITADO=true`.
    Daí em diante, todo upload do CAR (.zip) e todo clique em "Processar" fica com o Airflow:

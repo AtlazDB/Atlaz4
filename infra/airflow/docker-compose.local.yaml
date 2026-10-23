@@ -8,7 +8,7 @@
 #   2. .env.local preenchido (copie de .env.local.example)
 #
 # Subir:   docker compose -f docker-compose.local.yaml --env-file .env.local up --build
-# Abrir:   http://localhost:8080  (sem login: em dev todo mundo é admin)
+# Abrir:   http://localhost:8088  (sem login: em dev todo mundo é admin)
 # Parar:   Ctrl+C, ou docker compose -f docker-compose.local.yaml down
 
 services:
@@ -30,7 +30,8 @@ services:
       GEORURAL_OCI_AUTH: config
       OCI_CONFIG_FILE: /home/airflow/.oci/config
     ports:
-      - "8080:8080"
+      # porta do seu computador : porta do Airflow dentro do container
+      - "${AIRFLOW_PORTA:-8088}:8080"
     volumes:
       # As DAGs são lidas direto da pasta: editou, salvou, o Airflow recarrega.
       - ./dags:/opt/airflow/dags
