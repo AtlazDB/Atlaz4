@@ -202,8 +202,8 @@ tela, sempre acessível), **Validação** e **Padronização** (essas duas apare
 link — são as próximas etapas do pipeline, ainda não implementadas como tela própria; a validação
 já acontece durante o processamento, só não tem uma tela dedicada a ela).
 
-<img width="1600" height="813" alt="tela de cadastro" src="https://github.com/user-attachments/assets/c35b35e3-b252-414f-9c6f-e43404e82ed2" />
-<img width="1600" height="818" alt="WhatsApp Image 2026-09-27 at 19 31 01" src="https://github.com/user-attachments/assets/df3a4f5b-7c40-439b-b177-ec69612788d7" />
+<img width="1600" height="813" alt="tela de cadastro" src="" />
+<img width="1600" height="818" alt="WhatsApp Image 2026-09-27 at 19 31 01" src="" />
 
 
 **Passo a passo:**
