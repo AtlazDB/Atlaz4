@@ -43,7 +43,7 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     
 - **Estimativa:** 8
     
-- **Status:** 📅
+- **Status:** Concluído! ✅
     
 - **DoD (Critérios de Sucesso):**
     
@@ -73,7 +73,7 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     
 - **Estimativa:** 8
     
-- **Status:** 📅
+- **Status:** Concluído! ✅
     
 - **DoD (Critérios de Sucesso):**
     
@@ -102,7 +102,7 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     
 - **Estimativa:** 5
     
-- **Status:** 📅
+- **Status:** Concluído! ✅
     
 - **DoD (Critérios de Sucesso):**
 
@@ -130,7 +130,7 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
     
 - **Estimativa:** 5
     
-- **Status:** 📅
+- **Status:** Concluído! ✅
     
 - **DoD (Critérios de Sucesso):**
 
@@ -158,7 +158,7 @@ Nesta seção, detalhamos as histórias de usuário e seus respectivos **DoD (De
 
 - **Estimativa:** 8
 
-- **Status:** 📅
+- **Status:** Concluído! ✅
 
 - **DoD (Critérios de Sucesso):**
 
