@@ -18,7 +18,7 @@ def conectar(cfg: Config):
     con = oracledb.connect(
         user=cfg.db_usuario,
         password=cfg.db_senha,
-        dsn=f"{cfg.db_host}:{cfg.db_porta}/{cfg.db_servico}",
+        dsn=cfg.db_dsn or f"{cfg.db_host}:{cfg.db_porta}/{cfg.db_servico}",
     )
     try:
         if cfg.db_schema:

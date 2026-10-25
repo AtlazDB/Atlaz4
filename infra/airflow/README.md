@@ -8,9 +8,8 @@ com Airflow 3.3.1 em `docker compose`, dentro de `~/airflow`.
 | Arquivo | O que e |
 |---|---|
 | `Dockerfile` | Imagem propria: Airflow 3.3.1 + bibliotecas do pipeline |
-| `.env.example` | Modelo do `.env`. O `.env` real fica so na VM |
-| `docker-compose.yaml` | **Ainda nao versionado** — ver "Pendencias" |
-| `Caddyfile` | **Ainda nao versionado** — proxy reverso que publica a UI em HTTPS |
+| `.env.example` | Modelo do `.env` da VM (Autonomous, bucket, chaves do Airflow). O `.env` real fica so na VM |
+| `docker-compose.yaml` | Airflow de **producao** na VM: Postgres + api-server, scheduler e dag-processor (LocalExecutor). Tudo lido do `.env` |
 | `docker-compose.local.yaml` | Airflow de **desenvolvimento** no seu PC (um container, `airflow standalone`) |
 | `.env.local.example` | Modelo do `.env.local` do desenvolvimento |
 | `dags/` | As DAGs (`teste_conexoes`, `coleta_fontes`, `coletar_fonte`, `varredor_bruta`, `processar_arquivo`) |
@@ -93,41 +92,76 @@ upload/coleta ──> arquivo_bruto (RECEBIDO) ──> varredor_bruta (a cada 2 
 * Na VM troque `GEORURAL_OCI_AUTH=instance_principal` e aponte `GEORURAL_DB_*` para o Oracle
   da VM; o codigo e o mesmo.
 
+## Subir na VM (producao)
+
+O Airflow da VM usa o **Autonomous Database** da OCI (`georural-dev`) e o bucket real. Nada de
+Oracle local. A UI **nao fica exposta na internet**: escuta so em `127.0.0.1` da VM.
+
+**1. Na OCI (uma vez)**
+* *Bucket*: a VM entra no dynamic group `airflow-dg` (regra do compartimento raiz) e uma policy da
+  acesso aos objetos do bucket (Instance Principal, sem chave em disco).
+* *Banco*: em *Autonomous Database > georural-dev > Network*, coloque o IP publico da VM na
+  **Access control list** e desligue o **mTLS obrigatorio**. Em *Database connection > TLS*, copie a
+  string do `georuraldev_tp` para o `GEORURAL_DB_DSN`.
+* *Usuario do Airflow* (opcional, recomendado): `georural_airflow`, so com DML nas tabelas e
+  EXECUTE nos pacotes. Toda migration que criar tabela precisa do GRANT para ele.
+
+**2. Na VM**
+```bash
+sudo apt update && sudo apt install -y docker.io docker-compose-v2 git
+sudo usermod -aG docker $USER        # saia e entre de novo no SSH
+git clone https://github.com/AtlazDB/Atlaz4.git ~/Atlaz4 && cd ~/Atlaz4/infra/airflow
+cp .env.example .env && nano .env    # cada variavel diz de onde tirar o valor
+mkdir -p logs config
+docker compose up -d --build
+```
+
+**3. Conferir**
+```bash
+ssh -L 8088:localhost:8088 ubuntu@<IP da VM>      # do seu computador
+cat ~/Atlaz4/infra/airflow/config/simple_auth_manager_passwords.json.generated   # senha do admin
+```
+Abra http://localhost:8088, rode a DAG `teste_conexoes` (as duas tarefas verdes = Autonomous e
+bucket funcionando) e ative `varredor_bruta`, `processar_arquivo`, `coleta_fontes` e `coletar_fonte`.
+Na VM do back-end, `AIRFLOW_HABILITADO=true` no `.env`: o back so marca os arquivos e os pedidos de
+coleta no banco, e o Airflow os pega. As duas VMs nao precisam se enxergar.
+
 ## Como aplicar uma mudanca
 
-Sempre de dentro de `~/airflow` na VM. Fora dela o compose responde
+Sempre de dentro de `~/Atlaz4/infra/airflow` na VM (antes era `~/airflow`, na VM antiga). Fora dela o compose responde
 `no configuration file provided: not found`, e o erro vem enterrado embaixo de
 varios avisos de `FERNET_KEY` — da pra achar que o comando funcionou.
 
 ```bash
-cd ~/airflow
-docker compose build      # nao reinicia nada
-docker compose up -d      # aqui sim, ~1 min de indisponibilidade
+cd ~/Atlaz4/infra/airflow
+git pull
+docker compose up -d --build   # ~1 min de indisponibilidade
 ```
 
 Conferir que as bibliotecas subiram:
 
 ```bash
-cd ~/airflow && docker compose exec airflow-scheduler \
+cd ~/Atlaz4/infra/airflow && docker compose exec airflow-scheduler \
   python -c "import geopandas,shapely,pyproj,pyogrio,requests,oci;print('ok',geopandas.__version__)"
 ```
 
 ## Armadilhas conhecidas
 
-- **`fiona` nao instala nesta VM.** Sem wheel para Linux ARM em nenhuma versao.
-  Use `pyogrio`, que ja vem junto do geopandas 1.x. Detalhes no `Dockerfile`.
-- **O build regrava a tag local `apache/airflow:3.3.1`**, porque o compose declara
-  `image:` e `build:` ao mesmo tempo. Um `docker pull` nessa tag apaga as
-  bibliotecas e o ambiente quebra sem aviso.
+- **`fiona` nao instala em ARM.** Sem wheel para Linux ARM em nenhuma versao (a VM antiga era
+  Ampere; a atual e AMD E2.2). Use `pyogrio`, que ja vem junto do geopandas 1.x.
+- **A imagem tem nome proprio** (`atlaz4/airflow:producao`): o build nao sobrescreve a tag oficial
+  `apache/airflow:3.3.1`, que na VM antiga perdia as bibliotecas a cada `docker pull`.
+- **Autonomous Database Always Free: 20 GB.** As 4 fontes do PR inteiro ocupam ~8 GB em repouso,
+  mais ~4 GB de staging no pico de uma carga grande. O banco tambem para sozinho depois de 7 dias
+  sem uso: religue antes de uma demonstracao.
 - **A autenticacao com a OCI e por Instance Principal**, nao por chave em disco:
   dynamic group + policy na tenancy. Isso nao se recria copiando arquivo, e
   configuracao na OCI.
 
 ## Pendencias
 
-- [ ] Versionar `docker-compose.yaml` e `Caddyfile`. Hoje eles existem so na VM:
-      se ela morrer, o ambiente se perde. Antes de commitar o compose, trocar as
-      senhas literais por variaveis lidas do `.env` — o repositorio e publico.
-- [ ] `FERNET_KEY` esta vazia na VM. Enquanto estiver, nao guarde senha do Oracle
-      numa Connection do Airflow.
-- [ ] A UI esta publicada na internet com o login padrao do Airflow. Trocar a senha.
+- [x] `docker-compose.yaml` versionado, sem senha no arquivo (tudo do `.env`).
+- [x] `FERNET_KEY` obrigatoria: o compose nao sobe sem ela.
+- [x] UI fora da internet (so `127.0.0.1`, acesso por tunel SSH) e senha gerada na primeira subida.
+- [ ] Deploy automatico na VM do Airflow, no mesmo padrao do back (`deploy.sh` + chave SSH presa a ele).
+- [ ] Desligar a VM antiga do Airflow, se ainda estiver no ar com a UI publica.
