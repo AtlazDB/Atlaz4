@@ -2,7 +2,7 @@
 
 # Documentação - Sprint 2
 
-> Status da Sprint: Em andamento!
+> Status da Sprint: Concluído! ✅
 
 ---
 
@@ -209,7 +209,8 @@ Para o fechamento da Sprint 2, a equipe deve atender aos seguintes requisitos ge
 ---
 
 # BurndownChart da Sprint
-_Disponível ao final da Sprint._
+<img width="1049" height="506" alt="image" src="https://github.com/user-attachments/assets/568223ca-f417-4258-be6f-4be38350dbc9" />
+
 
 
 ---
