@@ -41,6 +41,7 @@ class Resumo:
 
 def preparar(cfg: Config, arquivo_id: int, ja_reservado: bool, dag_run_id: str | None) -> int:
     """Confere o arquivo, garante a reserva (PROCESSANDO) e abre a execução. Devolve o id dela.
+    Vale para os dois caminhos (este e o generico.py).
 
     ja_reservado=True quando quem disparou foi o varredor, que já passou o arquivo para
     PROCESSANDO. Num disparo manual a reserva acontece aqui.
@@ -51,7 +52,8 @@ def preparar(cfg: Config, arquivo_id: int, ja_reservado: bool, dag_run_id: str |
             raise ValueError(f"Arquivo {arquivo_id} não existe")
         if not arquivo.processavel:
             raise ValueError(
-                f"Arquivo {arquivo_id} ({arquivo.nome_original}, fonte {arquivo.sigla_fonte}) não é um .zip do CAR"
+                f"Arquivo {arquivo_id} ({arquivo.nome_original}, fonte {arquivo.sigla_fonte}) não é .zip, "
+                ".geojson nem .json"
             )
         if not ja_reservado and not gravacao.reservar(con, arquivo_id, somente_recebido=False):
             raise RuntimeError(f"Arquivo {arquivo_id} já está sendo processado")

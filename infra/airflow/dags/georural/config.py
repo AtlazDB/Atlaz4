@@ -16,6 +16,9 @@ class Config:
     db_host: str
     db_porta: int
     db_servico: str
+    # String de conexão inteira, quando o banco não é host:porta/serviço. No Autonomous Database
+    # da OCI é a "TLS connection string" do console (tcps://...:1522/..._tp.adb.oraclecloud.com).
+    db_dsn: str | None
     db_usuario: str
     db_senha: str
     # Schema dono das tabelas. Vazio quando o usuário conectado já é o dono (caso do PC).
@@ -27,6 +30,8 @@ class Config:
     # Quantos registros do shapefile são lidos e gravados por vez. É isso que limita a
     # memória: o arquivo nunca é carregado inteiro.
     tamanho_lote: int
+    # Prefixo da zona bruta no bucket, o mesmo oci.zona-bruta do back-end.
+    oci_zona_bruta: str = "bruta"
 
 
 def _obrigatoria(nome: str) -> str:
@@ -45,6 +50,7 @@ def carregar() -> Config:
         db_host=os.environ.get("GEORURAL_DB_HOST", "host.docker.internal"),
         db_porta=int(os.environ.get("GEORURAL_DB_PORTA", "1521")),
         db_servico=os.environ.get("GEORURAL_DB_SERVICO", "FREEPDB1"),
+        db_dsn=os.environ.get("GEORURAL_DB_DSN", "").strip() or None,
         db_usuario=_obrigatoria("GEORURAL_DB_USUARIO"),
         db_senha=_obrigatoria("GEORURAL_DB_SENHA"),
         db_schema=os.environ.get("GEORURAL_DB_SCHEMA", "").strip() or None,
@@ -53,4 +59,5 @@ def carregar() -> Config:
         oci_namespace=_obrigatoria("GEORURAL_OCI_NAMESPACE"),
         oci_bucket=_obrigatoria("GEORURAL_OCI_BUCKET"),
         tamanho_lote=int(os.environ.get("GEORURAL_TAMANHO_LOTE", "5000")),
+        oci_zona_bruta=os.environ.get("GEORURAL_OCI_ZONA_BRUTA", "bruta").strip() or "bruta",
     )

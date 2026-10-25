@@ -7,3 +7,6 @@ logs/
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Senha gerada da UI do Airflow (docker-compose.yaml de produção)
+config/

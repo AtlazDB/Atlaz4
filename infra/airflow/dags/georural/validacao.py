@@ -101,31 +101,49 @@ class Resultado:
         return json.dumps(self.atributos, ensure_ascii=False, default=str)
 
 
-def planejar_desempate(chaves) -> dict[str, Desempate]:
+@dataclass(frozen=True)
+class ColunasDesempate:
+    """Onde estão, no arquivo, as colunas que o desempate usa. O padrão é o shapefile do CAR; o
+    caminho genérico passa as colunas que o mapeamento da fonte resolveu (no WFS do SICAR:
+    status_imovel, area, dat_criacao)."""
+    codigo: str = COLUNA_COD_IMOVEL
+    situacao: str | None = COLUNA_SITUACAO
+    area: str | None = COLUNA_AREA
+    atualizacao: str | None = COLUNA_ATUALIZACAO
+    criacao: str | None = COLUNA_CRIACAO
+
+    def todas(self) -> list[str]:
+        return [c for c in (self.codigo, self.situacao, self.area, self.atualizacao, self.criacao) if c]
+
+
+COLUNAS_SHAPEFILE = ColunasDesempate()
+
+
+def planejar_desempate(chaves, colunas: ColunasDesempate = COLUNAS_SHAPEFILE) -> dict[str, Desempate]:
     """Para cada código repetido no arquivo, qual ocorrência entra.
 
-    `chaves` é a tabela com as colunas cod_imovel e ind_status do arquivo inteiro, na ordem de
-    leitura (ver shapefile.ler_colunas): sem geometria, cabe na memória mesmo com o PR todo.
-    Só os códigos repetidos ficam no plano (no CAR do PR, uns 2.300 de 560 mil).
+    `chaves` é a tabela com as colunas do desempate do arquivo inteiro, na ordem de leitura (ver
+    shapefile.ler_colunas): sem geometria, cabe na memória mesmo com o PR todo. Só os códigos
+    repetidos ficam no plano (no CAR do PR, uns 2.300 de 560 mil).
     """
-    if COLUNA_COD_IMOVEL not in chaves:
+    if colunas.codigo not in chaves:
         return {}
-    codigos = chaves[COLUNA_COD_IMOVEL].map(_texto)
+    codigos = chaves[colunas.codigo].map(_texto)
     repetidos = codigos.notna() & codigos.duplicated(keep=False)
     if not repetidos.any():
         return {}
 
     def coluna(nome, converter):
-        if nome not in chaves:
+        if not nome or nome not in chaves:
             return pd.Series(None, index=codigos[repetidos].index, dtype=object)
         return converter(chaves.loc[repetidos, nome])
 
     tabela = pd.DataFrame({
         "codigo": codigos[repetidos],
-        "situacao": coluna(COLUNA_SITUACAO, lambda s: s.map(lambda v: (_texto(v) or "").upper() or None)),
-        "area": coluna(COLUNA_AREA, lambda s: s.map(_numero)),
-        "atualizacao": coluna(COLUNA_ATUALIZACAO, _datas),
-        "criacao": coluna(COLUNA_CRIACAO, _datas),
+        "situacao": coluna(colunas.situacao, lambda s: s.map(lambda v: (_texto(v) or "").upper() or None)),
+        "area": coluna(colunas.area, lambda s: s.map(_numero)),
+        "atualizacao": coluna(colunas.atualizacao, _datas),
+        "criacao": coluna(colunas.criacao, _datas),
     })
     plano: dict[str, Desempate] = {}
     for codigo, grupo in tabela.groupby("codigo", sort=False):
@@ -195,7 +213,12 @@ def _resolver(ocorrencias: list[_Ocorrencia]) -> Desempate:
 
 
 def _datas(serie):
-    return pd.to_datetime(serie, format=FORMATO_DATA, errors="coerce")
+    """DD/MM/AAAA, como o shapefile do CAR; se nada converter, ISO 8601 (o WFS do SICAR manda
+    2014-05-07T20:52:55.333Z). A data vira ingênua (sem fuso) para as duas se compararem."""
+    datas = pd.to_datetime(serie, format=FORMATO_DATA, errors="coerce")
+    if datas.isna().all() and serie.notna().any():
+        datas = pd.to_datetime(serie, format="ISO8601", errors="coerce", utc=True).dt.tz_localize(None)
+    return datas
 
 
 def _instante(data) -> float:

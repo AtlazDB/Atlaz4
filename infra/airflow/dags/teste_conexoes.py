@@ -28,7 +28,8 @@ def teste_conexoes():
         with conectar(cfg) as con, con.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM arquivo_bruto")
             total = cur.fetchone()[0]
-        return f"Oracle OK ({cfg.db_host}:{cfg.db_porta}/{cfg.db_servico}) — {total} arquivos em arquivo_bruto"
+        destino = "Autonomous (GEORURAL_DB_DSN)" if cfg.db_dsn else f"{cfg.db_host}:{cfg.db_porta}/{cfg.db_servico}"
+        return f"Oracle OK ({destino}) — {total} arquivos em arquivo_bruto"
 
     @task
     def object_storage() -> str:

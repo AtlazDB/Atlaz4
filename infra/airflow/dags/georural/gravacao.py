@@ -15,6 +15,16 @@ from georural import sdo
 from georural.validacao import Resultado
 
 CONJUNTO_IMOVEIS = "imoveis_rurais"
+# O que os dois caminhos sabem ler (ver leitura.py): zip de shapefile ou de GeoJSON, ou GeoJSON.
+EXTENSOES_PROCESSAVEIS = (".zip", ".geojson", ".json")
+# Conjunto de dados (dataset_versao.conjunto) pela tabela de destino: o IFC, o IRL e a
+# Rastreabilidade procuram as versões por estes nomes.
+CONJUNTO_DA_TABELA = {
+    "imovel_rural": CONJUNTO_IMOVEIS,
+    "car_reserva_legal": "reserva_legal",
+    "foco_calor": "focos_calor",
+    "municipio": "municipios",
+}
 # Tabela de destino gravada na quarentena (registro_quarentena.entidade), a mesma da regra_campo
 ENTIDADE_IMOVEIS = "imovel_rural"
 # Quem aparece como autor da análise nos registros que a própria DAG descarta. O começo
@@ -57,9 +67,14 @@ class Arquivo:
     sigla_fonte: str
 
     @property
-    def processavel(self) -> bool:
-        """Por enquanto só o shapefile de imóveis do CAR (.zip), como no back-end."""
+    def caminho_car(self) -> bool:
+        """O shapefile de imóveis da fonte CAR (.zip) segue o caminho próprio (car.py), com as
+        regras em Python. O resto vai pelo genérico (generico.py), guiado pelo mapeamento."""
         return self.sigla_fonte.upper() == "CAR" and self.nome_original.lower().endswith(".zip")
+
+    @property
+    def processavel(self) -> bool:
+        return self.nome_original.lower().endswith(EXTENSOES_PROCESSAVEIS)
 
 
 @dataclass(frozen=True)
@@ -85,15 +100,17 @@ def buscar_arquivo(con, arquivo_id: int) -> Arquivo | None:
 
 
 def listar_recebidos(con, limite: int) -> list[int]:
-    """Arquivos do CAR (.zip) que chegaram na zona bruta e ainda não foram processados."""
+    """Arquivos que chegaram na zona bruta (upload ou coleta) e ainda não foram processados, de
+    qualquer fonte, nos formatos que o processamento lê."""
     with con.cursor() as cur:
         cur.execute(
             """
             SELECT a.id
-              FROM arquivo_bruto a JOIN fonte f ON f.id = a.fonte_id
+              FROM arquivo_bruto a
              WHERE a.status = 'RECEBIDO'
-               AND UPPER(f.sigla) = 'CAR'
-               AND LOWER(a.nome_original) LIKE '%.zip'
+               AND (LOWER(a.nome_original) LIKE '%.zip'
+                    OR LOWER(a.nome_original) LIKE '%.geojson'
+                    OR LOWER(a.nome_original) LIKE '%.json')
              ORDER BY a.recebido_em
              FETCH FIRST :limite ROWS ONLY
             """,
@@ -143,11 +160,11 @@ def iniciar_execucao(con, arquivo_id: int, dag_run_id: str | None) -> int:
     return execucao_id
 
 
-def criar_versao(cur, execucao_id: int) -> Versao:
+def criar_versao(cur, execucao_id: int, conjunto: str = CONJUNTO_IMOVEIS) -> Versao:
     """Próxima versão do conjunto na zona TRATADA. Roda dentro da transação principal."""
     cur.execute(
         "SELECT NVL(MAX(versao), 0) + 1 FROM dataset_versao WHERE conjunto = :conjunto",
-        conjunto=CONJUNTO_IMOVEIS,
+        conjunto=conjunto,
     )
     numero = int(cur.fetchone()[0])
     id_var = cur.var(oracledb.DB_TYPE_NUMBER)
@@ -157,7 +174,7 @@ def criar_versao(cur, execucao_id: int) -> Versao:
         VALUES (:conjunto, :versao, :execucao_id, 'TRATADA')
         RETURNING id INTO :id_saida
         """,
-        conjunto=CONJUNTO_IMOVEIS,
+        conjunto=conjunto,
         versao=numero,
         execucao_id=execucao_id,
         id_saida=id_var,
@@ -250,6 +267,27 @@ def concluir(cur, arquivo_id: int, execucao_id: int, versao: Versao,
         id=arquivo_id,
     )
     return substituidos
+
+
+def aguardando_mapeamento(con, arquivo_id: int, execucao_id: int, mensagem: str) -> None:
+    """A fonte ainda não tem mapeamento: as colunas ficaram registradas e o arquivo espera o
+    operador mapear e mandar processar de novo. Não é falha: nada foi gravado na Tratada."""
+    with con.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE execucao SET status = 'CONCLUIDA', finalizada_em = SYSTIMESTAMP, mensagem_erro = :msg
+             WHERE id = :id
+            """,
+            msg=mensagem[:4000], id=execucao_id,
+        )
+        cur.execute(
+            """
+            UPDATE arquivo_bruto SET status = 'AGUARDANDO_MAPEAMENTO', processado_em = SYSTIMESTAMP
+             WHERE id = :id
+            """,
+            id=arquivo_id,
+        )
+    con.commit()
 
 
 def falhar(con, arquivo_id: int, execucao_id: int | None, mensagem: str) -> None:

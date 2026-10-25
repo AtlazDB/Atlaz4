@@ -53,6 +53,13 @@ def listar(cfg: Config, prefixo: str, limite: int = 10) -> list[str]:
     return [obj.name for obj in resposta.data.objects]
 
 
+def enviar(cfg: Config, chave_objeto: str, origem: Path, content_type: str) -> None:
+    """Grava um arquivo do disco no bucket, em streaming (o zip do CAR tem centenas de MB)."""
+    with open(origem, "rb") as arquivo:
+        cliente(cfg).put_object(cfg.oci_namespace, cfg.oci_bucket, chave_objeto, arquivo,
+                                content_length=origem.stat().st_size, content_type=content_type)
+
+
 def baixar(cfg: Config, chave_objeto: str, destino: Path) -> Path:
     """Baixa um objeto em blocos direto para o disco."""
     try:
