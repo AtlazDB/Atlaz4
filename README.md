@@ -38,8 +38,7 @@ Desenvolvimento do **GeoRural DataHub**, uma plataforma web com **Spring Boot** 
 |   US09   |   Média    | Como Auditor, quero consultar o histórico das versões dos dados indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões. |    8     |   3    |  Concluído ✅   |
 |   US10   |   Média    | Como Gestor, quero controlar o acesso às funcionalidades da aplicação de acordo com o perfil de cada usuário para que informações e operações importantes sejam protegidas contra acessos não autorizados. |    5     |   3    |  Planejada 📅   |
 |   US11   |   Média    | Como Analista, quero consultar os demais indicadores ambientais de cada imóvel rural (cobertura vegetal, APP, áreas protegidas, embargos e desmatamento) em mapa, gráficos e tabelas para que eu possa avaliar sua situação e seus riscos ambientais. |    8     |   3    |  Planejada 📅   |
-|   US12   |   Média    | Como Auditor, quero consultar o histórico das versões dos dados e indicadores e sua origem para que eu possa verificar como os resultados foram produzidos e comparar diferentes versões. |    8     |   2    |  Planejada 📅    |
-|   US13   |   Baixa    | Como Analista, quero visualizar os indicadores agregados por município e exportá-los por download e por meio de uma API para que eu possa analisar as regiões e utilizar os resultados em outros sistemas. |    8     |   3    |  Planejada 📅   |
+|   US12   |   Baixa    | Como Analista, quero visualizar os indicadores agregados por município e exportá-los por download e por meio de uma API para que eu possa analisar as regiões e utilizar os resultados em outros sistemas. |    8     |   3    |  Planejada 📅   |
 
 
 ---
