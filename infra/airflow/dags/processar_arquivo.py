@@ -1,15 +1,20 @@
 """
 ### processar_arquivo
 
-Processa um arquivo da zona bruta: hoje, o shapefile de imóveis do CAR (.zip).
-Faz o mesmo que o processamento Java do back-end, mas fora da aplicação.
+Processa um arquivo da zona bruta, por um de dois caminhos:
+
+* **CAR** (`car.py`): o shapefile de imóveis da fonte CAR (.zip), com as regras em Python, o mesmo
+  que o processamento Java do back-end faz.
+* **genérico** (`generico.py`): todo o resto (fontes por link, GeoJSON), guiado pelo mapeamento da
+  fonte (regra_campo): staging → `pkg_quality.validate` → `pkg_tratada` (Tratada e quarentena).
+  Sem mapeamento, o arquivo fica AGUARDANDO_MAPEAMENTO, com as colunas registradas.
 
 **Como é disparada**
 * pelo `varredor_bruta`, que já reserva o arquivo (status PROCESSANDO): `{"arquivo_bruto_id": 42, "reservado": true}`
 * à mão, pela interface do Airflow (*Trigger DAG w/ config*): `{"arquivo_bruto_id": 42}` — serve para reprocessar
 
-Uma execução por vez (`max_active_runs=1`): dois arquivos do CAR gravando ao mesmo tempo
-disputariam os mesmos imóveis no MERGE.
+Uma execução por vez (`max_active_runs=1`): dois arquivos gravando ao mesmo tempo disputariam
+as mesmas linhas no MERGE.
 """
 
 from dataclasses import asdict
@@ -18,7 +23,8 @@ from datetime import timedelta
 import pendulum
 from airflow.sdk import Param, dag, get_current_context, task
 
-from georural import car, config
+from georural import car, config, generico, gravacao
+from georural.banco import conectar
 
 
 def _registrar_falha(context) -> None:
@@ -68,13 +74,17 @@ def processar_arquivo():
     @task(
         retries=1,
         retry_delay=timedelta(minutes=2),
-        execution_timeout=timedelta(hours=3),
+        execution_timeout=timedelta(hours=8),  # o CAR inteiro pelo caminho genérico passa de 3 h
         on_failure_callback=_registrar_falha,
     )
     def processar(execucao_id: int) -> dict:
         params = get_current_context()["params"]
-        resumo = car.processar(config.carregar(), int(params["arquivo_bruto_id"]), execucao_id)
-        return asdict(resumo)
+        arquivo_id = int(params["arquivo_bruto_id"])
+        cfg = config.carregar()
+        with conectar(cfg) as con:
+            caminho_car = gravacao.buscar_arquivo(con, arquivo_id).caminho_car
+        modulo = car if caminho_car else generico
+        return asdict(modulo.processar(cfg, arquivo_id, execucao_id))
 
     processar(preparar())
 

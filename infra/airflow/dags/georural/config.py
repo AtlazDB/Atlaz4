@@ -27,6 +27,8 @@ class Config:
     # Quantos registros do shapefile são lidos e gravados por vez. É isso que limita a
     # memória: o arquivo nunca é carregado inteiro.
     tamanho_lote: int
+    # Prefixo da zona bruta no bucket, o mesmo oci.zona-bruta do back-end.
+    oci_zona_bruta: str = "bruta"
 
 
 def _obrigatoria(nome: str) -> str:
@@ -53,4 +55,5 @@ def carregar() -> Config:
         oci_namespace=_obrigatoria("GEORURAL_OCI_NAMESPACE"),
         oci_bucket=_obrigatoria("GEORURAL_OCI_BUCKET"),
         tamanho_lote=int(os.environ.get("GEORURAL_TAMANHO_LOTE", "5000")),
+        oci_zona_bruta=os.environ.get("GEORURAL_OCI_ZONA_BRUTA", "bruta").strip() or "bruta",
     )
