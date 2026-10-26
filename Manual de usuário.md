@@ -326,8 +326,6 @@ Com o banco vazio, carregue os dados nesta ordem — cada etapa depende da anter
 
 ### Visão geral da tela
 
-<!-- TODO: print novo da tela com o menu lateral -->
-
 A navegação fica no **menu lateral**, dividido em três grupos:
 
 | Grupo | Tela | Para quê |
@@ -342,10 +340,11 @@ navegador). Em telas estreitas, o menu mostra só os ícones.
 
 ### Fontes de dados
 
-<!-- TODO: print novo da tela Fontes de dados -->
-
 Tela usada pelo Operador de Dados. À esquerda fica a lista **Fontes cadastradas**; à direita, o
 card **Importar arquivo** e, abaixo dele, os **Arquivos recebidos** da fonte selecionada.
+
+<img width="1600" height="805" alt="image" src="https://github.com/user-attachments/assets/a25dae79-09bd-482a-b740-e559fda8cff4" />
+
 
 **Passo a passo:**
 
@@ -424,11 +423,12 @@ Aberto pelo botão **#** ("Mapear colunas") ao lado de cada fonte, na tela Fonte
    aguardando mapeamento.
 
 ### Quarentena
-
-<!-- TODO: print da tela Quarentena e da gaveta "Analisar" -->
-
 Registros que não cumpriram alguma regra. O dado original nunca é alterado: a correção é guardada
 à parte e validada de novo antes de ir para a zona tratada.
+
+<img width="1365" height="673" alt="image" src="https://github.com/user-attachments/assets/8f04b449-8e96-450d-a1db-4067fe0a0dbf" />
+<img width="1600" height="811" alt="image" src="https://github.com/user-attachments/assets/d79cefaf-438f-409a-b58a-af2a7bb02361" />
+
 
 **Visão geral:**
 
@@ -473,11 +473,12 @@ automaticamente quando uma carga mais nova traz o mesmo registro.
 
 ### Imóveis rurais
 
-<!-- TODO: print novo da tela Imóveis rurais com o card de indicadores -->
-
 Tela usada pelo Analista para consultar e visualizar os imóveis já processados. Mostra o filtro no
 topo, o mapa à esquerda (com a legenda de imóveis e focos de calor no cabeçalho) e, à direita, a
 tabela de imóveis — com o total ao lado do título — e o card de indicadores.
+
+<img width="1364" height="676" alt="image" src="https://github.com/user-attachments/assets/bd6eca35-016c-4642-8759-a0e524bc7145" />
+
 
 **Passo a passo:**
 
@@ -510,60 +511,12 @@ tabela de imóveis — com o total ao lado do título — e o card de indicadore
 
 ### Rastreabilidade
 
-<!-- TODO: print da tela Rastreabilidade -->
-
 Mostra o caminho completo de um indicador, do resultado até o arquivo de origem.
-
-1. Chegue pela opção **De onde veio este número?** no card de indicadores, ou digite o **Código do
-   imóvel** e clique em **Consultar**.
-2. Escolha o indicador: **IRL · Reserva Legal** ou **IFC · Focos de calor**.
-3. Leia o **Caminho até a origem**:
-   1. **Dados de entrada** — fonte, arquivo, hash, versão dos dados e a execução que os processou;
-   2. **Regra aplicada** — nome, versão, fórmula e parâmetros;
-   3. **Resultado** — a conta feita e a conclusão.
-4. Em **O que mudou desde o cálculo anterior**, veja se mudou o dado (área do imóvel, área de RL ou
-   focos, versões) ou a regra.
-5. Em **Valor em cada cálculo**, veja o histórico de todos os cálculos do indicador; a linha mais
-   recente é marcada como "atual".
-
-> O IRL só é calculado para imóveis de municípios que têm Reserva Legal carregada.
+<img width="1362" height="670" alt="image" src="https://github.com/user-attachments/assets/bbff2b8a-9f8e-481c-b2ff-740328af29a8" />
 
 
-## Mensagens comuns e o que fazer
-
-| Mensagem | O que significa | O que fazer |
-|---|---|---|
-| "Não foi possível falar com o servidor. Ele está rodando?" | A tela não alcança o back-end | Confira se o back-end está no ar e se o `VITE_API_URL` aponta para `http://localhost:8080/api/v1` |
-| "O servidor demorou demais para responder." | A requisição passou do tempo limite | Tente de novo; arquivos muito grandes podem demorar a processar |
-| "Formato "X" não aceito." | Extensão fora da lista aceita | Envie `.csv`, `.zip`, `.geojson`, `.json`, `.shp`, `.xlsx` ou `.txt` |
-| "Arquivo maior que o limite de 500 MB." | Arquivo acima do limite | Divida o arquivo ou compacte em `.zip` |
-| "Já existe uma fonte com a sigla …" | Sigla repetida | Use outra sigla |
-| "O arquivo … já está sendo processado." | O arquivo já está em processamento | Aguarde o status mudar |
-| "Há colunas sem mapeamento…" | A fonte tem colunas novas sem destino | Mapeie pelo botão **#** e processe de novo |
-| "Não há processamento para arquivos da fonte …" | Sem o Airflow, o back-end só processa as fontes `CAR`, `CAR-RL` e `INPE-FOCOS` | O arquivo fica guardado na zona bruta; para processá-lo, ligue o Airflow (`AIRFLOW_HABILITADO=true`) |
-| "Sem mudança: …" | A coleta por link trouxe o mesmo conteúdo da última vez | Nada a fazer: o arquivo anterior continua valendo |
-| "Os indicadores deste imóvel ainda não foram calculados." | Ainda não houve cálculo | Clique em **Calcular indicadores** |
-| "Sem Reserva Legal carregada para o município deste imóvel." | Não há RL daquele município | Envie o arquivo de RL na fonte `CAR-RL` e recalcule |
-| "Escreva o motivo antes de descartar." | Falta a justificativa | Preencha a justificativa e clique em **Descartar** |
-| "A correção precisa ser um objeto JSON válido…" | A cópia de trabalho não é um JSON válido | Corrija o texto mantendo o formato do dado original |
 
 
-## Limitações conhecidas
 
-- Não há login nem perfis de usuário: todas as telas ficam acessíveis a quem abre a aplicação.
-- A carga da malha municipal do IBGE é feita só pela API.
-- A coleta por link só acontece quando alguém clica em **Executar**; não há coleta agendada pela
-  periodicidade da fonte.
-- O **Testar link** confere só se o endereço responde; ainda não mostra uma amostra dos dados.
-- **Sem o Airflow:**
-  - só as fontes `CAR`, `CAR-RL` e `INPE-FOCOS` são processadas; arquivos de outras fontes ficam
-    guardados na zona bruta, mesmo com as colunas mapeadas;
-  - a coleta por link baixa tudo numa requisição só, sem paginar serviços ArcGIS/WFS, e não mostra
-    andamento;
-  - os indicadores não são recalculados sozinhos depois de uma carga: é preciso clicar em
-    **Recalcular**.
-- A quarentena conta os registros **Substituídos**, mas não há cartão de métrica para eles (use o
-  filtro **Status**).
-- O processamento de arquivos muito grandes (por exemplo, o CAR do Paraná inteiro) pode demorar;
-  nesse caso, o recomendado é usar o processamento pelo Airflow.
-- Não é possível editar ou excluir uma fonte já cadastrada.
+
+
